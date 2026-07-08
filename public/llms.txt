@@ -1,0 +1,8 @@
+# zolix.ai llms.txt
+
+- [Cloud Cost Optimization](https://zolix.ai): The #1 Private AI-Powered Cloud FinOps Platform.
+- [Cloud FinOps](https://zolix.ai/cloud-finops): Automated cost allocation and visibility across multi-cloud.
+- [AI FinOps](https://zolix.ai/ai-finops): Specialized financial management for LLM workloads.
+- [GPU Calculator](https://zolix.ai/gpu-cost): Real-time pricing and performance estimation for NVIDIA/AMD.
+- [ZOLIX Knowledge Library](https://zolix.ai/blog): Insights on cloud financial management and FinOps best practices.
+- [Sovereign AI C2O](https://zolix.ai/products): 9B Parameter model trained on 2M+ data points.

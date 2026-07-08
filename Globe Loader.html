@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Globe Loader</title>
+<style>
+  :root {
+    --bg: #f2efe8;
+    --ink: 33, 33, 31; /* charcoal, monochrome */
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+  }
+  body {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .loader {
+    width: 200px;
+    height: 200px;
+    display: block;
+  }
+  /* gentle breathing so the disc feels alive even before data lands */
+  canvas { display: block; }
+</style>
+</head>
+<body>
+  <canvas class="loader" id="globe" width="200" height="200" aria-label="Loading"></canvas>
+
+  <!-- d3-geo + topojson for a real orthographic projection of actual country geometry -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script>
+  (function () {
+    const SIZE = 200;
+    const CX = SIZE / 2;
+    const CY = SIZE / 2;
+    const R = 58;                 // globe radius
+    const INK = '33, 33, 31';
+
+    const canvas = document.getElementById('globe');
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = SIZE * dpr;
+    canvas.height = SIZE * dpr;
+    canvas.style.width = SIZE + 'px';
+    canvas.style.height = SIZE + 'px';
+    ctx.scale(dpr, dpr);
+
+    const projection = d3.geoOrthographic()
+      .scale(R)
+      .translate([CX, CY])
+      .clipAngle(90)
+      .rotate([0, -16, 0]);
+
+    const path = d3.geoPath(projection, ctx);
+    const graticule = d3.geoGraticule10();
+
+    let land = null;        // FeatureCollection of countries
+    let borders = null;     // interior borders mesh
+    let coast = null;       // coastline mesh
+
+    // ---- Whirl: a halo of comet-like particles on tilted, rotated orbits ----
+    const N = 46;
+    const particles = [];
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+    for (let i = 0; i < N; i++) {
+      particles.push({
+        angle: rnd(0, Math.PI * 2),
+        radius: rnd(64, 93),
+        phi: rnd(0.95, 1.32),         // orbit tilt toward viewer
+        psi: rnd(0, Math.PI * 2),     // in-plane rotation of the orbit ellipse
+        speed: rnd(0.9, 1.9),         // angular velocity
+        size: rnd(0.5, 1.7),
+        trail: rnd(0.18, 0.42)        // trail arc length (radians)
+      });
+    }
+
+    // 3D point on a particle's tilted, rotated orbit -> screen coords + depth
+    function orbitPoint(p, angle) {
+      const x = p.radius * Math.cos(angle);
+      const yy = p.radius * Math.sin(angle);
+      const y = yy * Math.cos(p.phi);
+      const z = yy * Math.sin(p.phi);          // +front / -back
+      const c = Math.cos(p.psi), s = Math.sin(p.psi);
+      return {
+        x: CX + x * c - y * s,
+        y: CY + x * s + y * c,
+        z: z
+      };
+    }
+
+    function drawParticle(p, frontOnly) {
+      const head = orbitPoint(p, p.angle);
+      const front = head.z >= 0;
+      if (front !== frontOnly) return;
+
+      const depth = (head.z / p.radius);              // -sinphi..+sinphi
+      const baseAlpha = front ? 0.30 + depth * 0.34 : 0.12 - depth * 0.10;
+
+      // trailing arc
+      const STEPS = 9;
+      ctx.beginPath();
+      for (let k = 0; k <= STEPS; k++) {
+        const a = p.angle - (k / STEPS) * p.trail;
+        const pt = orbitPoint(p, a);
+        if (k === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.lineCap = 'round';
+      ctx.lineWidth = p.size;
+      ctx.strokeStyle = `rgba(${INK}, ${Math.max(0, baseAlpha * 0.55)})`;
+      ctx.stroke();
+
+      // bright head
+      ctx.beginPath();
+      ctx.arc(head.x, head.y, p.size * 0.95, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${INK}, ${Math.max(0, baseAlpha)})`;
+      ctx.fill();
+    }
+
+    function drawSphere() {
+      // subtle shaded disc so the globe reads as a sphere on the off-white field
+      const g = ctx.createRadialGradient(
+        CX - R * 0.35, CY - R * 0.4, R * 0.2,
+        CX, CY, R
+      );
+      g.addColorStop(0, '#efece5');
+      g.addColorStop(1, '#e1dcd1');
+      ctx.beginPath();
+      path({ type: 'Sphere' });
+      ctx.fillStyle = g;
+      ctx.fill();
+    }
+
+    function drawGeo() {
+      // graticule
+      ctx.beginPath();
+      path(graticule);
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = `rgba(${INK}, 0.08)`;
+      ctx.stroke();
+
+      if (land) {
+        // filled landmasses
+        ctx.beginPath();
+        path(land);
+        ctx.fillStyle = `rgba(${INK}, 0.9)`;
+        ctx.fill();
+
+        // interior country borders carved in the off-white tone
+        ctx.beginPath();
+        path(borders);
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'rgba(242, 239, 232, 0.55)';
+        ctx.stroke();
+
+        // crisp coastline
+        ctx.beginPath();
+        path(coast);
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = `rgba(${INK}, 0.9)`;
+        ctx.stroke();
+      }
+
+      // rim
+      ctx.beginPath();
+      path({ type: 'Sphere' });
+      ctx.lineWidth = 0.75;
+      ctx.strokeStyle = `rgba(${INK}, 0.32)`;
+      ctx.stroke();
+    }
+
+    let last = performance.now();
+    let spin = 0;
+    function frame(now) {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+
+      spin += dt * 14;                         // globe rotation deg/sec
+      projection.rotate([spin, -16, 0]);
+
+      for (const p of particles) p.angle += p.speed * dt;
+
+      ctx.clearRect(0, 0, SIZE, SIZE);
+
+      // whirl behind -> globe -> whirl in front (for depth)
+      for (const p of particles) drawParticle(p, false);
+      drawSphere();
+      drawGeo();
+      for (const p of particles) drawParticle(p, true);
+
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+
+    // Load real country geometry
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+      .then(r => r.json())
+      .then(world => {
+        const obj = world.objects.countries;
+        land = topojson.feature(world, obj);
+        borders = topojson.mesh(world, obj, (a, b) => a !== b);
+        coast = topojson.mesh(world, obj, (a, b) => a === b);
+      })
+      .catch(() => { /* keep spinning graticule sphere if data fails */ });
+  })();
+  </script>
+</body>
+</html>
