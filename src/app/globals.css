@@ -98,3 +98,21 @@ body {
   background-size: 32px 32px;
   opacity: 0.08;
 }
+
+/* Globe reveal. A keyframe animation (not a class-toggled transition) so the
+   fade is guaranteed to play from 0 — a CSS transition between two class states
+   can be skipped by the browser depending on paint timing, which makes the
+   globe "pop" in instead of fading. `both` holds the final opacity after it
+   ends. */
+@keyframes globe-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.globe-reveal {
+  animation: globe-reveal 900ms ease-out both;
+}

@@ -87,9 +87,9 @@ const Hero = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-4xl md:text-7xl lg:text-[90px] font-extrabold tracking-tighter text-zolix-dark mb-10 leading-[0.95] max-w-5xl"
         >
-          AI-Powered Cloud Cost <br />
+          Cut AI, GPU & <br />
           <span className="text-zolix-orange italic relative inline-block">
-            Optimization & Management Platform
+            Cloud Costs Instantly
           </span>
         </motion.h1>
 
