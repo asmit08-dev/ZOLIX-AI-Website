@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { BlogStatus } from "@/lib/blog";
+import { sanitizeBlogContent } from "@/lib/sanitize-html";
 
 export function isAdmin(request: NextRequest) {
   const token = process.env.BLOG_ADMIN_TOKEN;
@@ -16,7 +17,7 @@ export async function blogPayload(request: NextRequest) {
   if (!body.title?.trim() || !body.category?.trim() || !body.content?.trim() || !validStatus) throw new Error("Title, category, content, and a valid status are required.");
   return {
     title: String(body.title), subtitle: typeof body.subtitle === "string" ? body.subtitle : null,
-    content: String(body.content), category: String(body.category),
+    content: sanitizeBlogContent(String(body.content)), category: String(body.category),
     tags: Array.isArray(body.tags) ? body.tags.filter((tag: unknown): tag is string => typeof tag === "string").slice(0, 20) : [],
     status: body.status as BlogStatus, featured: Boolean(body.featured),
     coverImage: { url: typeof body.coverImage?.url === "string" ? body.coverImage.url : "", alt: typeof body.coverImage?.alt === "string" ? body.coverImage.alt : "" },

@@ -65,6 +65,8 @@ export default function BlogAdminPage() {
           saving={admin.saving}
           onSubmit={admin.save}
           onCancel={admin.reset}
+          token={admin.token}
+          posts={admin.blogs}
         />
 
         <ArticleList blogs={admin.blogs} loading={admin.loading} onEdit={admin.edit} onDelete={requestDelete} />

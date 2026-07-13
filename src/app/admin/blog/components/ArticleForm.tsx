@@ -1,24 +1,30 @@
 "use client";
 
-import { FormEvent } from "react";
+import { FormEvent, useCallback, type Dispatch, type SetStateAction } from "react";
 import { LoaderCircle, Save, Send, X } from "lucide-react";
 import { RichTextEditor } from "./RichTextEditor";
-import type { BlogFormData } from "../types";
+import { CoverImageUpload } from "./CoverImageUpload";
+import type { Blog, BlogFormData } from "../types";
 
 type Props = {
   form: BlogFormData;
-  setForm: (form: BlogFormData) => void;
+  setForm: Dispatch<SetStateAction<BlogFormData>>;
   editing: boolean;
   saving: boolean;
   onSubmit: () => void;
   onCancel: () => void;
+  token: string;
+  posts: Blog[];
 };
 
-export function ArticleForm({ form, setForm, editing, saving, onSubmit, onCancel }: Props) {
+export function ArticleForm({ form, setForm, editing, saving, onSubmit, onCancel, token, posts }: Props) {
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     onSubmit();
   }
+
+  const handleContentChange = useCallback((content: string) => setForm((prev) => ({ ...prev, content })), [setForm]);
+  const handleCoverImageChange = useCallback((coverImage: BlogFormData["coverImage"]) => setForm((prev) => ({ ...prev, coverImage })), [setForm]);
 
   return (
     <form onSubmit={handleSubmit} className="mb-12 rounded-[28px] border border-zolix-dark/10 bg-white p-5 shadow-sm md:p-8">
@@ -30,36 +36,11 @@ export function ArticleForm({ form, setForm, editing, saving, onSubmit, onCancel
           </button>
         )}
       </div>
+      <div className="mb-5">
+        <p className="mb-2 text-sm font-bold">Cover image</p>
+        <CoverImageUpload value={form.coverImage} onChange={handleCoverImageChange} token={token} />
+      </div>
       <div className="grid gap-5 md:grid-cols-2">
-        <label className="text-sm font-bold">
-          Cover image URL
-          <input
-            value={form.coverImage.url}
-            onChange={(e) => setForm({ ...form, coverImage: { ...form.coverImage, url: e.target.value } })}
-            placeholder="https://…"
-            className="mt-2 w-full rounded-xl border border-zolix-dark/15 px-4 py-3 font-normal outline-none focus:border-zolix-orange"
-          />
-        </label>
-        <label className="text-sm font-bold">
-          Cover image alt text
-          <input
-            value={form.coverImage.alt}
-            onChange={(e) => setForm({ ...form, coverImage: { ...form.coverImage, alt: e.target.value } })}
-            placeholder="Describe the image"
-            className="mt-2 w-full rounded-xl border border-zolix-dark/15 px-4 py-3 font-normal outline-none focus:border-zolix-orange"
-          />
-        </label>
-        {form.coverImage.url && (
-          <div className="md:col-span-2">
-            <img
-              src={form.coverImage.url}
-              alt=""
-              className="h-32 w-full rounded-xl border border-zolix-dark/10 object-cover bg-zolix-beige"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-              onLoad={(e) => { (e.target as HTMLImageElement).style.display = "block"; }}
-            />
-          </div>
-        )}
         <label className="text-sm font-bold md:col-span-2">
           Title
           <input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="mt-2 w-full rounded-xl border border-zolix-dark/15 px-4 py-3 font-normal outline-none focus:border-zolix-orange" />
@@ -84,7 +65,7 @@ export function ArticleForm({ form, setForm, editing, saving, onSubmit, onCancel
       </div>
       <label className="mt-5 block text-sm font-bold">
         Content
-        <RichTextEditor value={form.content} onChange={(content) => setForm({ ...form, content })} />
+        <RichTextEditor value={form.content} onChange={handleContentChange} token={token} posts={posts} />
       </label>
       <div className="mt-6 flex flex-wrap items-center gap-5">
         <label className="flex items-center gap-2 text-sm font-bold">

@@ -32,6 +32,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.blog-content h1,
 .blog-content h2,
 .blog-content h3 {
   color: var(--zolix-dark);
@@ -41,6 +42,7 @@ body {
   margin: 2.5rem 0 1rem;
 }
 
+.blog-content h1 { font-size: 2.5rem; }
 .blog-content h2 { font-size: 2rem; }
 .blog-content h3 { font-size: 1.5rem; }
 .blog-content p { margin: 1.25rem 0; }
@@ -48,10 +50,30 @@ body {
 .blog-content ol { margin: 1.25rem 0; padding-left: 1.5rem; }
 .blog-content ul { list-style: disc; }
 .blog-content ol { list-style: decimal; }
+.blog-content a {
+  color: var(--zolix-orange);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.blog-content img {
+  margin: 1.5rem 0;
+  width: 100%;
+  border-radius: 20px;
+}
+.blog-content blockquote {
+  margin: 1.75rem 0;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  border-left: 3px solid var(--zolix-orange);
+  color: color-mix(in srgb, var(--zolix-dark) 70%, transparent);
+  font-style: italic;
+}
 
-[contenteditable][data-placeholder]:empty::before {
+.tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   color: color-mix(in srgb, var(--zolix-dark) 35%, transparent);
+  float: left;
+  height: 0;
   pointer-events: none;
 }
 

@@ -78,5 +78,5 @@ export function useBlogAdmin(notify: (kind: ToastKind, message: string) => void)
     await load();
   }
 
-  return { authenticated, blogs, form, setForm, editing, loading, saving, authError, login, reset, edit, save, remove };
+  return { token, authenticated, blogs, form, setForm, editing, loading, saving, authError, login, reset, edit, save, remove };
 }
