@@ -10,13 +10,12 @@ export type Blog = {
   tags: string[];
   status: BlogStatus;
   featured: boolean;
-  likes: number;
   publishedAt: string | null;
   createdAt: string;
   coverImage: { url: string; alt: string };
 };
 
-export type BlogFormData = Omit<Blog, "id" | "slug" | "likes" | "publishedAt" | "createdAt">;
+export type BlogFormData = Omit<Blog, "id" | "slug" | "publishedAt" | "createdAt">;
 
 export const blankForm: BlogFormData = {
   title: "",

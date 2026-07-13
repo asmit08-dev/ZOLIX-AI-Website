@@ -16,7 +16,6 @@ export type Blog = {
   tags: string[];
   status: BlogStatus;
   featured: boolean;
-  likes: number;
   seo: { title: string; description: string };
   publishedAt: string | null;
   createdAt: string;
@@ -97,14 +96,14 @@ function mapBlog(row: Record<string, unknown>): Blog {
     subtitle: row.subtitle as string | null, excerpt: row.excerpt as string, content: row.content as string,
     coverImage: { url: row.cover_image_url as string, alt: row.cover_image_alt as string },
     category: row.category as string, tags: row.tags as string[], status: row.status as BlogStatus,
-    featured: row.featured as boolean, likes: row.likes as number,
+    featured: row.featured as boolean,
     seo: { title: row.seo_title as string, description: row.seo_description as string },
     publishedAt: row.published_at ? new Date(row.published_at as string).toISOString() : null,
     createdAt: new Date(row.created_at as string).toISOString(), updatedAt: new Date(row.updated_at as string).toISOString(),
   };
 }
 
-const fields = "id,title,slug,subtitle,excerpt,content,cover_image_url,cover_image_alt,category,tags,status,featured,likes,seo_title,seo_description,published_at,created_at,updated_at";
+const fields = "id,title,slug,subtitle,excerpt,content,cover_image_url,cover_image_alt,category,tags,status,featured,seo_title,seo_description,published_at,created_at,updated_at";
 
 export async function getBlogs(publicOnly = false) {
   const db = await ready();
@@ -147,4 +146,3 @@ export async function updateBlog(id: string, input: BlogInput) {
 }
 
 export async function deleteBlog(id: string) { const db = await ready(); return ((await db.query("DELETE FROM blogs WHERE id=$1", [id])).rowCount ?? 0) > 0; }
-export async function incrementLikes(slug: string) { const db = await ready(); const r = await db.query(`UPDATE blogs SET likes=likes+1,updated_at=NOW() WHERE slug=$1 AND status='published' RETURNING likes`, [slug]); return r.rows[0]?.likes as number | undefined; }

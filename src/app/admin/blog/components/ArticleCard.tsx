@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Edit3, ExternalLink, Heart, ImageOff, Star, Trash2 } from "lucide-react";
+import { Edit3, ExternalLink, ImageOff, Star, Trash2 } from "lucide-react";
 import type { Blog } from "../types";
 
 const dateFmt = new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" });
@@ -36,7 +36,7 @@ export function ArticleCard({ blog, onEdit, onDelete }: Props) {
         </div>
         <h3 className="mt-3 truncate font-bold">{blog.title}</h3>
         <p className="mt-1 text-xs text-zolix-dark/45">
-          {blog.category} · {label} {value} · <Heart size={11} className="inline" /> {blog.likes}
+          {blog.category} · {label} {value}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <button onClick={() => onEdit(blog)} className="inline-flex items-center gap-1 rounded-lg bg-zolix-beige px-3 py-2 text-xs font-bold transition hover:bg-zolix-dark/10">
