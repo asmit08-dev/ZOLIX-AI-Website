@@ -32,6 +32,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.blog-content h2,
+.blog-content h3 {
+  color: var(--zolix-dark);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 2.5rem 0 1rem;
+}
+
+.blog-content h2 { font-size: 2rem; }
+.blog-content h3 { font-size: 1.5rem; }
+.blog-content p { margin: 1.25rem 0; }
+.blog-content ul,
+.blog-content ol { margin: 1.25rem 0; padding-left: 1.5rem; }
+.blog-content ul { list-style: disc; }
+.blog-content ol { list-style: decimal; }
+
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: color-mix(in srgb, var(--zolix-dark) 35%, transparent);
+  pointer-events: none;
+}
+
 .nav-shell {
   position: relative;
   background: var(--nav-surface);

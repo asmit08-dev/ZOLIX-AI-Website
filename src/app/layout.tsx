@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GTMLoader from "@/components/GTMLoader";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import {
   SITE_URL,
   SITE_NAME,
@@ -64,6 +65,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${poppins.className} min-h-screen bg-white text-zolix-dark selection:bg-zolix-orange selection:text-white`}
       >
+        <GoogleAnalytics />
         <GTMLoader />
         <Navbar />
         <main>
