@@ -1,15 +1,23 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 
 export function LoginGate({ onSubmit, loading, error }: { onSubmit: (token: string) => void; loading: boolean; error: string }) {
   const [value, setValue] = useState("");
   const [reveal, setReveal] = useState(false);
+  const [slow, setSlow] = useState(false);
+
+  useEffect(() => {
+    if (!loading) return;
+    const timer = setTimeout(() => setSlow(true), 3000);
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    setSlow(false);
     onSubmit(value);
   }
 
@@ -51,6 +59,7 @@ export function LoginGate({ onSubmit, loading, error }: { onSubmit: (token: stri
         <button disabled={loading} className="mt-4 w-full rounded-xl bg-zolix-dark py-3 text-sm font-bold text-white transition hover:bg-zolix-dark/90 disabled:opacity-60">
           {loading ? "Checking…" : "Continue"}
         </button>
+        {loading && slow && <p className="mt-4 text-sm text-zolix-dark/50">Still checking… this can take a few seconds if the database is waking up.</p>}
         {error && <p className="mt-4 text-sm font-semibold text-red-600">{error}</p>}
       </motion.form>
     </main>

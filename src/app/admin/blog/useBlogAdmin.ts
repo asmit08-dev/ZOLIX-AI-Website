@@ -21,10 +21,19 @@ export function useBlogAdmin(notify: (kind: ToastKind, message: string) => void)
   async function load(accessToken = token) {
     setLoading(true);
     setAuthError("");
-    const response = await fetch("/api/blogs?admin=1", { headers: { Authorization: `Bearer ${accessToken}` } });
-    const success = response.ok;
-    if (success) setBlogs(await response.json());
-    else setAuthError((await response.json()).error || "Could not load blogs.");
+    let success = false;
+    try {
+      const response = await fetch("/api/blogs?admin=1", { headers: { Authorization: `Bearer ${accessToken}` } });
+      success = response.ok;
+      if (success) {
+        setBlogs(await response.json());
+      } else {
+        const body = await response.json().catch(() => null);
+        setAuthError(body?.error || `Could not load blogs (HTTP ${response.status}).`);
+      }
+    } catch {
+      setAuthError("Couldn't reach the server. Check your connection and try again.");
+    }
     setAuthenticated(success);
     if (!success) sessionStorage.removeItem(STORAGE_KEY);
     setLoading(false);
@@ -56,26 +65,38 @@ export function useBlogAdmin(notify: (kind: ToastKind, message: string) => void)
 
   async function save() {
     setSaving(true);
-    const response = await fetch(editing ? `/api/blogs/${editing}` : "/api/blogs", {
-      method: editing ? "PUT" : "POST", headers: headers(token), body: JSON.stringify(form),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      notify("error", data.error || "Could not save blog.");
+    try {
+      const response = await fetch(editing ? `/api/blogs/${editing}` : "/api/blogs", {
+        method: editing ? "PUT" : "POST", headers: headers(token), body: JSON.stringify(form),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        notify("error", data?.error || `Could not save blog (HTTP ${response.status}).`);
+        return;
+      }
+      notify("success", form.status === "published" ? "Article published." : "Draft saved.");
+      reset();
+      await load();
+    } catch {
+      notify("error", "Couldn't reach the server. Check your connection and try again.");
+    } finally {
       setSaving(false);
-      return;
     }
-    notify("success", form.status === "published" ? "Article published." : "Draft saved.");
-    reset();
-    await load();
-    setSaving(false);
   }
 
   async function remove(blog: Blog) {
-    const response = await fetch(`/api/blogs/${blog.id}`, { method: "DELETE", headers: headers(token) });
-    if (!response.ok) { notify("error", (await response.json()).error || "Could not delete blog."); return; }
-    notify("success", "Article deleted.");
-    await load();
+    try {
+      const response = await fetch(`/api/blogs/${blog.id}`, { method: "DELETE", headers: headers(token) });
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        notify("error", body?.error || `Could not delete blog (HTTP ${response.status}).`);
+        return;
+      }
+      notify("success", "Article deleted.");
+      await load();
+    } catch {
+      notify("error", "Couldn't reach the server. Check your connection and try again.");
+    }
   }
 
   return { token, authenticated, blogs, form, setForm, editing, loading, saving, authError, login, reset, edit, save, remove };
