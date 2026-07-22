@@ -147,7 +147,11 @@ export async function createBlog(input: BlogInput) {
 }
 
 export async function updateBlog(id: string, input: BlogInput) {
-  const value = normalized(input); const slug = await uniqueSlug(value.title, id); const db = await ready();
+  const value = normalized(input); const db = await ready();
+  // A published URL must remain stable when an editor changes the article title.
+  const existing = await db.query<{ slug: string }>("SELECT slug FROM blogs WHERE id = $1", [id]);
+  if (!existing.rows[0]) return null;
+  const slug = existing.rows[0].slug;
   const result = await db.query(`UPDATE blogs SET title=$2,slug=$3,subtitle=$4,excerpt=$5,content=$6,cover_image_url=$7,cover_image_alt=$8,category=$9,tags=$10,status=$11,featured=$12,seo_title=$13,seo_description=$14,published_at=CASE WHEN $11='published' THEN COALESCE(published_at,NOW()) ELSE NULL END,updated_at=NOW() WHERE id=$1 RETURNING ${fields}`,
     [id,value.title,slug,value.subtitle,value.excerpt,value.content,value.url,value.alt,value.category,value.tags,value.status,value.featured,value.seoTitle,value.seoDescription]);
   return result.rows[0] ? mapBlog(result.rows[0]) : null;
