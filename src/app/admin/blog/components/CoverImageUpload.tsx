@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, type DragEvent } from "react";
-import { ImagePlus, LoaderCircle, RefreshCw, X } from "lucide-react";
+import { useEffect, useRef, useState, type DragEvent } from "react";
+import { Crop, ImagePlus, LoaderCircle, RefreshCw, X } from "lucide-react";
+import { CropModal } from "./CropModal";
 
 type CoverImage = { url: string; alt: string };
 
@@ -20,9 +21,27 @@ export function CoverImageUpload({ value, onChange, token }: Props) {
   const [error, setError] = useState("");
   const [manualUrl, setManualUrl] = useState(false);
   const [loadedUrl, setLoadedUrl] = useState("");
+  const [showCrop, setShowCrop] = useState(false);
   const imageLoaded = loadedUrl === value.url;
   const dragDepth = useRef(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pendingAutoCropUrl = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (imageLoaded && pendingAutoCropUrl.current === value.url) {
+      pendingAutoCropUrl.current = null;
+      setShowCrop(true);
+    }
+  }, [imageLoaded, value.url]);
+
+  async function uploadFile(file: File | Blob, filename: string) {
+    const formData = new FormData();
+    formData.append("file", file, filename);
+    const response = await fetch("/api/blog-images", { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: formData });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Image upload failed.");
+    return data.url as string;
+  }
 
   async function upload(file: File) {
     setError("");
@@ -36,17 +55,32 @@ export function CoverImageUpload({ value, onChange, token }: Props) {
     }
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await fetch("/api/blog-images", { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: formData });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Image upload failed.");
-      onChange({ ...value, url: data.url as string });
+      const url = await uploadFile(file, file.name);
+      pendingAutoCropUrl.current = url;
+      onChange({ ...value, url });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Image upload failed.");
     } finally {
       setUploading(false);
     }
+  }
+
+  async function handleCropApply(blob: Blob) {
+    setUploading(true);
+    try {
+      const url = await uploadFile(blob, "cropped.jpg");
+      onChange({ ...value, url });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Crop upload failed.");
+    } finally {
+      setUploading(false);
+      setShowCrop(false);
+    }
+  }
+
+  function handleCropError(message: string) {
+    setError(message);
+    setShowCrop(false);
   }
 
   function handleDragEnter(event: DragEvent<HTMLDivElement>) {
@@ -77,7 +111,7 @@ export function CoverImageUpload({ value, onChange, token }: Props) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !value.url && !uploading && fileInputRef.current?.click()}
-        className={`group relative flex min-h-44 w-full items-center justify-center overflow-hidden rounded-2xl border-2 transition-all duration-200 ${
+        className={`group relative flex min-h-64 w-full items-center justify-center overflow-hidden rounded-2xl border-2 transition-all duration-200 ${
           dragActive
             ? "scale-[1.01] border-dashed border-zolix-orange bg-zolix-orange/10"
             : value.url
@@ -87,7 +121,7 @@ export function CoverImageUpload({ value, onChange, token }: Props) {
       >
         {value.url ? (
           <>
-            {!imageLoaded && (
+            {(!imageLoaded || uploading) && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <LoaderCircle size={22} className="animate-spin text-zolix-orange" />
               </div>
@@ -98,9 +132,16 @@ export function CoverImageUpload({ value, onChange, token }: Props) {
               alt=""
               onLoad={() => setLoadedUrl(value.url)}
               onError={() => setLoadedUrl(value.url)}
-              className={`h-44 w-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+              className={`h-64 w-full object-cover transition-opacity duration-300 ${imageLoaded && !uploading ? "opacity-100" : "opacity-0"}`}
             />
             <div className="absolute inset-0 flex items-center justify-center gap-2 bg-zolix-dark/0 opacity-0 transition-all duration-200 group-hover:bg-zolix-dark/50 group-hover:opacity-100">
+              <button
+                type="button"
+                onClick={(event) => { event.stopPropagation(); setShowCrop(true); }}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-xs font-bold text-zolix-dark transition hover:bg-zolix-beige"
+              >
+                <Crop size={13} /> Crop
+              </button>
               <button
                 type="button"
                 onClick={(event) => { event.stopPropagation(); fileInputRef.current?.click(); }}
@@ -165,12 +206,22 @@ export function CoverImageUpload({ value, onChange, token }: Props) {
             <input
               value={value.url}
               onChange={(event) => onChange({ ...value, url: event.target.value })}
+              onBlur={() => { if (value.url) pendingAutoCropUrl.current = value.url; }}
               placeholder="https://…"
               className="mt-1 w-full rounded-lg border border-zolix-dark/15 px-3 py-2 text-sm font-normal outline-none focus:border-zolix-orange"
             />
           </label>
         )}
       </div>
+
+      {showCrop && value.url && (
+        <CropModal
+          imageUrl={value.url}
+          onApply={handleCropApply}
+          onSkip={() => setShowCrop(false)}
+          onError={handleCropError}
+        />
+      )}
     </div>
   );
 }

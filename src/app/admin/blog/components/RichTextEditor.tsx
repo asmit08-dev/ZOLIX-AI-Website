@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useEffect, useMemo, useRef, useState, type DragEvent, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { TextSelection } from "@tiptap/pm/state";
 import StarterKit from "@tiptap/starter-kit";
@@ -9,7 +10,7 @@ import TiptapImage from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import {
   Bold, Italic, List, ListOrdered, Quote, Link as LinkIcon, ImagePlus, LoaderCircle,
-  Heading1, Heading2, Heading3, Pilcrow,
+  Heading1, Heading2, Heading3, Pilcrow, Maximize2, Minimize2,
 } from "lucide-react";
 import type { Blog } from "../types";
 
@@ -58,6 +59,7 @@ export const RichTextEditor = memo(function RichTextEditor({ value, onChange, to
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [linkError, setLinkError] = useState("");
+  const [expanded, setExpanded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragDepth = useRef(0);
 
@@ -193,13 +195,8 @@ export const RichTextEditor = memo(function RichTextEditor({ value, onChange, to
 
   const text = editor?.getText() ?? "";
 
-  return (
-    <div
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDropCapture={handleDropCapture}
-      className={`overflow-hidden rounded-2xl border-2 bg-white shadow-sm transition-colors duration-200 focus-within:border-zolix-orange ${dragActive ? "border-zolix-orange bg-zolix-orange/5" : "border-zolix-dark/15"}`}
-    >
+  const panel = (
+    <>
       <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b border-zolix-dark/10 bg-zolix-beige/70 p-2 backdrop-blur">
         <ToolbarButton title="Normal text" active={editor?.isActive("paragraph")} onClick={() => editor?.chain().focus().setParagraph().run()}><Pilcrow size={15} /></ToolbarButton>
         <ToolbarButton title="Heading 1" active={editor?.isActive("heading", { level: 1 })} onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}><Heading1 size={15} /></ToolbarButton>
@@ -233,6 +230,11 @@ export const RichTextEditor = memo(function RichTextEditor({ value, onChange, to
           }}
         />
         {uploading && <span className="ml-1 text-xs font-bold text-zolix-orange">Uploading image…</span>}
+        <div className="ml-auto">
+          <ToolbarButton title={expanded ? "Collapse editor" : "Expand editor"} onClick={() => setExpanded((prev) => !prev)}>
+            {expanded ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+          </ToolbarButton>
+        </div>
       </div>
 
       {uploadError && <p className="border-b border-zolix-dark/10 bg-red-50 px-4 py-2 text-xs font-bold text-red-600">{uploadError}</p>}
@@ -290,7 +292,7 @@ export const RichTextEditor = memo(function RichTextEditor({ value, onChange, to
         </div>
       )}
 
-      <div className="relative max-h-[32rem] min-h-56 overflow-y-auto">
+      <div className={`relative overflow-y-auto ${expanded ? "flex-1" : "max-h-[32rem] min-h-56"}`}>
         <EditorContent editor={editor} />
         {dragActive && (
           <div className="pointer-events-none absolute inset-2 flex items-center justify-center rounded-xl border-2 border-dashed border-zolix-orange bg-white/80">
@@ -303,6 +305,27 @@ export const RichTextEditor = memo(function RichTextEditor({ value, onChange, to
         <span>{wordCount(text)} words</span>
         <span>Drag and drop, paste, or use the image button to add photos</span>
       </div>
+    </>
+  );
+
+  const frameClassName = `bg-white shadow-sm transition-colors duration-200 focus-within:border-zolix-orange ${
+    expanded ? "flex h-[80vh] w-[90vw] max-w-6xl flex-col overflow-hidden rounded-2xl border-2 shadow-xl" : "overflow-hidden rounded-2xl border-2"
+  } ${dragActive ? "border-zolix-orange bg-zolix-orange/5" : "border-zolix-dark/15"}`;
+
+  if (expanded && typeof document !== "undefined") {
+    return createPortal(
+      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-zolix-dark/60 p-4">
+        <div onDragEnter={handleDragEnter} onDragLeave={handleDragLeave} onDropCapture={handleDropCapture} className={frameClassName}>
+          {panel}
+        </div>
+      </div>,
+      document.body,
+    );
+  }
+
+  return (
+    <div onDragEnter={handleDragEnter} onDragLeave={handleDragLeave} onDropCapture={handleDropCapture} className={frameClassName}>
+      {panel}
     </div>
   );
 });

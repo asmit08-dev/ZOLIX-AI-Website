@@ -59,6 +59,7 @@ export default function BlogAdminPage() {
         </div>
 
         <ArticleForm
+          key={admin.editing ?? "new"}
           form={admin.form}
           setForm={admin.setForm}
           editing={Boolean(admin.editing)}
