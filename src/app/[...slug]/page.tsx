@@ -14,7 +14,10 @@ function findInsight(slugParts: string[]) {
 }
 
 export function generateStaticParams() {
-  return insightLinks.map((link) => ({
+  // Blog articles have their own dedicated `/blog/[slug]` route backed by the
+  // blog database. Including them here creates static catch-all pages for the
+  // same URLs, which makes every article render the generic insight content.
+  return insightLinks.filter((link) => link.category !== "blog").map((link) => ({
     slug: link.path.split("/").filter(Boolean),
   }));
 }
