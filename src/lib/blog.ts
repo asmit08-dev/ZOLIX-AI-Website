@@ -1,6 +1,5 @@
 import "server-only";
 import { Pool } from "pg";
-import { insightLinks } from "@/lib/insights-data";
 
 export type BlogStatus = "draft" | "published";
 
@@ -37,26 +36,6 @@ function database() {
   return pool;
 }
 
-const escapeHtml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
-
-function seedArticleContent(title: string, description: string) {
-  const safeTitle = escapeHtml(title);
-  const safeDescription = escapeHtml(description);
-  return `<p>${safeDescription}</p><h2>Why this matters</h2><p>${safeTitle} is most effective when cloud cost, technical performance, and business priorities are considered together. Teams can move from reacting to a monthly bill to understanding the usage and decisions behind it.</p><h2>A practical approach</h2><ul><li><strong>Establish ownership:</strong> connect services, environments, and spend to the teams that operate them.</li><li><strong>Make costs visible:</strong> review timely usage and variance data alongside deployments, demand, and reliability signals.</li><li><strong>Prioritize action:</strong> focus on changes with a clear owner, expected outcome, and measurable result.</li></ul><h2>Questions to ask</h2><p>Which workloads are driving the largest change? Is that change aligned with customer demand or a product decision? What trade-off would an optimization introduce for performance, resilience, or delivery speed?</p><h2>What this means for your team</h2><p>ZOLIX AI helps teams turn cloud-cost data into practical decisions. With clear allocation, operational context, and a shared review rhythm, engineering and finance can improve efficiency without slowing innovation.</p>`;
-}
-
-const initialPosts = insightLinks.filter((post) => post.category === "blog").map((post) => ({
-  title: post.h1,
-  slug: post.path.split("/").pop()!,
-  subtitle: post.metaDesc,
-  excerpt: post.metaDesc,
-  content: seedArticleContent(post.h1, post.metaDesc),
-  category: "FinOps",
-  tags: ["FinOps", "Cloud optimization"],
-  seoTitle: post.metaTitle,
-  seoDescription: post.metaDesc,
-}));
-
 async function initialize() {
   const db = database();
   await db.query(`
@@ -83,13 +62,6 @@ async function initialize() {
     );
     CREATE INDEX IF NOT EXISTS blogs_public_index ON blogs (status, published_at DESC);
   `);
-  for (const post of initialPosts) {
-    await db.query(
-      `INSERT INTO blogs (title, slug, subtitle, excerpt, content, category, tags, status, seo_title, seo_description, published_at)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,'published',$8,$9,NOW()) ON CONFLICT (slug) DO NOTHING`,
-      [post.title, post.slug, post.subtitle, post.excerpt, post.content, post.category, post.tags, post.seoTitle, post.seoDescription],
-    );
-  }
 }
 
 async function ready() {
