@@ -1,3 +1,5 @@
+import type { FaqItem } from "@/lib/faq-extract";
+
 export type BlogStatus = "draft" | "published";
 
 export type Blog = {
@@ -8,6 +10,7 @@ export type Blog = {
   content: string;
   category: string;
   tags: string[];
+  faqs: FaqItem[];
   status: BlogStatus;
   featured: boolean;
   publishedAt: string | null;
@@ -23,6 +26,7 @@ export const blankForm: BlogFormData = {
   content: "",
   category: "",
   tags: [],
+  faqs: [],
   status: "draft",
   featured: false,
   coverImage: { url: "", alt: "" },

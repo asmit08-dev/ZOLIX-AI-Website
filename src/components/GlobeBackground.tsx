@@ -32,6 +32,9 @@ const isLand = (lng: number, lat: number) => {
 const SPHERE_SAMPLES = 24000;
 const SPIN_RAD_PER_S = 0.21;
 const TILT = -0.28;
+// This is a background treatment, so 30fps is visually indistinguishable at
+// this slow rotation speed while avoiding duplicate work on 60/120Hz displays.
+const FRAME_INTERVAL_MS = 1000 / 30;
 
 // Architectural Palette from image
 const COLORS = {
@@ -145,17 +148,9 @@ const GlobeBackground = ({ className = '' }: { className?: string }) => {
       return hasValidSize;
     };
 
-    // Very fast raw matrix math projection
-    const project = (v: Vec3, cosS: number, sinS: number, cosT: number, sinT: number) => {
-      const x1 = v[0] * cosS + v[2] * sinS;
-      const z1 = -v[0] * sinS + v[2] * cosS;
-      const y1 = v[1];
-      const y2 = y1 * cosT - z1 * sinT;
-      const z2 = y1 * sinT + z1 * cosT;
-      return { x: cx + x1 * R, y: cy - y2 * R, z: z2 };
-    };
-
-    // Highly optimized clipping path drawer
+    // Project directly into the path. Returning a new `{ x, y, z }` for every
+    // map segment and dot created tens of thousands of short-lived objects per
+    // frame, which regularly triggered garbage collection while scrolling.
     const drawPaths = (
       lines: Vec3[][],
       cosS: number, sinS: number, cosT: number, sinT: number,
@@ -168,31 +163,41 @@ const GlobeBackground = ({ className = '' }: { className?: string }) => {
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         let prevVisible = false;
-        let prevP = null;
+        let prevX = 0;
+        let prevY = 0;
+        let prevZ = 0;
+        let hasPrevious = false;
 
         for (let j = 0; j < line.length; j++) {
-          const p = project(line[j], cosS, sinS, cosT, sinT);
+          const v = line[j];
+          const x1 = v[0] * cosS + v[2] * sinS;
+          const z1 = -v[0] * sinS + v[2] * cosS;
+          const y2 = v[1] * cosT - z1 * sinT;
+          const z2 = v[1] * sinT + z1 * cosT;
+          const x = cx + x1 * R;
+          const y = cy - y2 * R;
           
-          if (p.z > 0) {
+          if (z2 > 0) {
             if (!prevVisible) {
-              if (prevP) {
+              if (hasPrevious) {
                 // Calculates exact pixel it crosses the horizon to prevent gaps
-                const t = p.z / (p.z - prevP.z);
-                ctx.moveTo(p.x + t * (prevP.x - p.x), p.y + t * (prevP.y - p.y));
+                const t = z2 / (z2 - prevZ);
+                ctx.moveTo(x + t * (prevX - x), y + t * (prevY - y));
               } else {
-                ctx.moveTo(p.x, p.y);
+                ctx.moveTo(x, y);
               }
             }
-            ctx.lineTo(p.x, p.y);
+            ctx.lineTo(x, y);
             prevVisible = true;
-          } else {
-            if (prevVisible && prevP) {
-              const t = prevP.z / (prevP.z - p.z);
-              ctx.lineTo(prevP.x + t * (p.x - prevP.x), prevP.y + t * (p.y - prevP.y));
-            }
+          } else if (prevVisible && hasPrevious) {
+            const t = prevZ / (prevZ - z2);
+            ctx.lineTo(prevX + t * (x - prevX), prevY + t * (y - prevY));
             prevVisible = false;
           }
-          prevP = p;
+          prevX = x;
+          prevY = y;
+          prevZ = z2;
+          hasPrevious = true;
         }
       }
       ctx.strokeStyle = color;
@@ -200,7 +205,7 @@ const GlobeBackground = ({ className = '' }: { className?: string }) => {
       ctx.stroke();
     };
 
-    const draw = (now: number) => {
+    const draw = () => {
       if (!hasValidSize) return;
 
       // Fill background
@@ -225,9 +230,13 @@ const GlobeBackground = ({ className = '' }: { className?: string }) => {
       const half = tile / 2;
       ctx.beginPath(); // Batched path mapping drastically speeds up rect rendering
       for (let i = 0; i < LAND_POINTS.length; i++) {
-        const p = project(LAND_POINTS[i], cosS, sinS, cosT, sinT);
-        if (p.z > 0.01) {
-          ctx.rect(p.x - half, p.y - half, tile, tile);
+        const v = LAND_POINTS[i];
+        const x1 = v[0] * cosS + v[2] * sinS;
+        const z1 = -v[0] * sinS + v[2] * cosS;
+        const z2 = v[1] * sinT + z1 * cosT;
+        if (z2 > 0.01) {
+          const y2 = v[1] * cosT - z1 * sinT;
+          ctx.rect(cx + x1 * R - half, cy - y2 * R - half, tile, tile);
         }
       }
       ctx.fillStyle = COLORS.dots;
@@ -243,18 +252,54 @@ const GlobeBackground = ({ className = '' }: { className?: string }) => {
 
     let last = performance.now();
     const frame = (now: number) => {
+      // Keep the globe's angular velocity time-based, even when a render is
+      // skipped. This preserves its current motion while roughly halving CPU
+      // and canvas work on common 60Hz screens.
+      if (now - last < FRAME_INTERVAL_MS) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       spin += SPIN_RAD_PER_S * dt;
-      draw(now);
+      draw();
       raf = requestAnimationFrame(frame);
     };
 
-    // Load External Geometries and transform them to pure 3D lines ONCE
+    // The globe projects ~24k points plus every country and US state border per
+    // frame. That is fine while it is on screen, but it used to keep running at
+    // 60fps for the entire session — so scrolling down the rest of the page was
+    // competing with a full canvas render of something nobody could see.
+    // `onScreen` and `pageVisible` gate the loop; the drawing itself is
+    // untouched, so the globe looks exactly the same whenever it is visible.
+    let onScreen = true;
+    let pageVisible = !document.hidden;
+    let running = false;
+
+    const shouldRun = () => onScreen && pageVisible && hasValidSize;
+
+    const start = () => {
+      if (running || !shouldRun()) return;
+      running = true;
+      last = performance.now(); // avoid a jump in spin after being paused
+      raf = requestAnimationFrame(frame);
+    };
+
+    const stop = () => {
+      if (!running) return;
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    const sync = () => (shouldRun() ? start() : stop());
+
+    // Load geometries once, from our own origin. These were fetched from
+    // unpkg.com on every page load: ~222KB behind a third-party DNS + TLS
+    // handshake, uncacheable by us, on the critical path of the globe reveal.
     if (mapLinesRef.current.world.length === 0) {
       Promise.all([
-        fetch('https://unpkg.com/world-atlas@2.0.2/countries-110m.json').then((r) => r.json()),
-        fetch('https://unpkg.com/us-atlas@3.0.1/states-10m.json').then((r) => r.json()),
+        fetch('/data/countries-110m.json').then((r) => r.json()),
+        fetch('/data/states-10m.json').then((r) => r.json()),
       ]).then(([world, us]) => {
         const worldGeo = topojson.feature(world, world.objects.countries);
         const usGeo = topojson.feature(us, us.objects.states);
@@ -266,14 +311,35 @@ const GlobeBackground = ({ className = '' }: { className?: string }) => {
       setReady(true); // Already loaded
     }
 
-    const ro = new ResizeObserver(() => resize());
+    const ro = new ResizeObserver(() => {
+      resize();
+      sync();
+    });
     ro.observe(canvas.parentElement!);
 
-    if (resize()) raf = requestAnimationFrame(frame);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        sync();
+      },
+      { rootMargin: '100px' }
+    );
+    io.observe(canvas.parentElement!);
+
+    const onVisibility = () => {
+      pageVisible = !document.hidden;
+      sync();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    resize();
+    start();
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, []);
 

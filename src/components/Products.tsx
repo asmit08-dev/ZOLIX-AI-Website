@@ -1,27 +1,44 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Cloud, BrainCircuit, Cpu, ArrowUpRight, ShieldCheck, Database, Zap, ArrowRight } from 'lucide-react';
+import { Cloud, BrainCircuit, Cpu, ArrowUpRight, ShieldCheck, Database, Zap, ArrowRight, Radar, Gauge, BellRing } from 'lucide-react';
 import Link from 'next/link';
 
+// The three capabilities with a dedicated page link to it; the rest are
+// platform features that have no standalone route, so they render as plain cards.
 const productData = [
   {
     title: "Cloud FinOps",
-    desc: "Automated cost allocation, visibility, and optimization across multi-cloud environments.",
+    desc: "Unified cost visibility, allocation, and optimization across AWS, Azure, GCP, and OCI. Built for complex, multi-account architectures.",
     icon: Cloud,
-    color: "bg-zolix-orange"
+    href: "/cloud-finops"
   },
   {
     title: "AI FinOps",
-    desc: "Specialized financial management for LLM training and inference workloads.",
+    desc: "Token-level cost attribution for LLM workloads, plus training vs. inference cost breakdowns your team can actually act on.",
     icon: BrainCircuit,
-    color: "bg-zolix-orange"
+    href: "/ai-finops"
   },
   {
     title: "GPU Calculator",
-    desc: "Real-time pricing and performance estimation for NVIDIA and AMD hardware.",
+    desc: "Real-time pricing and performance estimation for NVIDIA and AMD hardware across every major cloud and GPU provider.",
     icon: Cpu,
-    color: "bg-zolix-orange"
+    href: "/gpu-cost"
+  },
+  {
+    title: "Waste Detection",
+    desc: "Continuous scanning against thousands of known waste patterns - idle instances, orphaned volumes, over-provisioned databases.",
+    icon: Radar
+  },
+  {
+    title: "Rightsizing Engine",
+    desc: "Specific, sized recommendations based on your actual usage - not generic thresholds that don't hold up under real workloads.",
+    icon: Gauge
+  },
+  {
+    title: "Forecasting & Alerts",
+    desc: "Budget forecasts built on historical usage trends, with real-time alerts before spend crosses your threshold.",
+    icon: BellRing
   }
 ];
 
@@ -31,7 +48,7 @@ const Products = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div className="max-w-2xl">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">Our Core Products</h2>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">Core Capabilities</h2>
             <p className="text-gray-500 text-lg font-medium">Powerful tools designed to give you complete control over your infrastructure spending.</p>
           </div>
           <Link href="/products" className="group bg-black text-white pl-6 pr-2 py-2 rounded-full flex items-center gap-6 hover:bg-zolix-orange transition-all active:scale-95">
@@ -44,7 +61,13 @@ const Products = () => {
 
         {/* Sovereign AI C2O Engine Highlight */}
         <div className="mb-24 p-10 md:p-16 bg-zolix-beige rounded-[60px] border border-black/5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-zolix-orange/5 rounded-full blur-[100px] -mr-48 -mt-48" />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(circle 290px at 100% 0%, rgba(220, 106, 79, 0.06), transparent 70%)",
+            }}
+          />
           <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="inline-flex items-center gap-2 bg-zolix-orange text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest mb-8">
@@ -96,29 +119,50 @@ const Products = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {productData.map((product, idx) => (
-            <motion.div
-              key={product.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Link href="/products" className="group block p-10 rounded-[40px] bg-zolix-beige hover:bg-black hover:text-white transition-all duration-500 cursor-pointer h-full">
-                <div className={`w-14 h-14 ${product.color} rounded-2xl flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform`}>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {productData.map((product, idx) => {
+            const body = (
+              <>
+                <div className="w-14 h-14 bg-zolix-orange rounded-2xl flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform">
                   <product.icon size={28} />
                 </div>
-                <h3 className="text-xl font-bold mb-4 flex items-center justify-between">
+                <h3 className="text-xl font-bold mb-4 flex items-center justify-between gap-4">
                   {product.title}
-                  <ArrowUpRight size={20} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {product.href && (
+                    <ArrowUpRight size={20} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  )}
                 </h3>
                 <p className="text-gray-500 group-hover:text-gray-400 leading-relaxed font-medium text-sm">
                   {product.desc}
                 </p>
-              </Link>
-            </motion.div>
-          ))}
+                {product.href && (
+                  <span className="mt-8 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zolix-orange">
+                    Learn More <ArrowRight size={13} />
+                  </span>
+                )}
+              </>
+            );
+
+            const className = "group block p-10 rounded-[40px] bg-zolix-beige transition-all duration-500 h-full";
+
+            return (
+              <motion.div
+                key={product.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: (idx % 3) * 0.1 }}
+                viewport={{ once: true }}
+              >
+                {product.href ? (
+                  <Link href={product.href} className={`${className} hover:bg-black hover:text-white cursor-pointer`}>
+                    {body}
+                  </Link>
+                ) : (
+                  <div className={className}>{body}</div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

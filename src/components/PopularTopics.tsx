@@ -12,11 +12,11 @@ export default function PopularTopics() {
 
   return (
     <section className="py-24 px-6 bg-white border-t border-zolix-dark/5">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto text-center">
         <div className="text-[10px] font-black uppercase tracking-[0.3em] text-zolix-dark/30 mb-8">
           Popular Topics
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap justify-center gap-3">
           {links.map((link) => (
             <Link
               key={link.href}

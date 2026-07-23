@@ -61,6 +61,26 @@ body {
   width: 100%;
   border-radius: 20px;
 }
+.blog-content table {
+  display: block;
+  margin: 1.75rem 0;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+.blog-content th,
+.blog-content td {
+  border: 1px solid color-mix(in srgb, var(--zolix-dark) 12%, transparent);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  vertical-align: top;
+}
+.blog-content th {
+  background: var(--zolix-beige);
+  font-weight: 700;
+  color: var(--zolix-dark);
+}
 .blog-content blockquote {
   margin: 1.75rem 0;
   padding: 0.25rem 0 0.25rem 1.25rem;
@@ -77,13 +97,13 @@ body {
   pointer-events: none;
 }
 
+/* The surface is now a static per-route value, so there is nothing to
+   transition and nothing to promote. `will-change: background-color` here was
+   a pure cost: background-color is not a compositable property, so it forced a
+   permanent layer that had to be re-rastered for no benefit. */
 .nav-shell {
   position: relative;
   background: var(--nav-surface);
-  transition:
-    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    padding 180ms ease-out;
-  will-change: background-color;
 }
 
 .nav-shell-content {
@@ -128,10 +148,6 @@ body {
 .nav-mobile-menu {
   background: var(--nav-mobile-surface);
   color: var(--nav-link-strong);
-  transition:
-    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: background-color;
 }
 
 .nav-mobile-link {
@@ -160,4 +176,38 @@ body {
 
 .globe-reveal {
   animation: globe-reveal 900ms ease-out both;
+}
+
+/* Ambient loops. These are transform-only on purpose so the compositor owns
+   them — they were framer-motion `repeat: Infinity` animations, which tick on
+   the main thread forever and compete with scrolling. */
+@keyframes radar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.radar-spin {
+  animation: radar-spin 10s linear infinite;
+}
+
+@keyframes scan-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.scan-sweep {
+  animation: scan-sweep 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-spin,
+  .scan-sweep,
+  .animate-marquee {
+    animation: none;
+  }
 }

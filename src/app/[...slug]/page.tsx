@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { insightLinks, generateDetailedContent } from "@/lib/insights-data";
+import { BUILT_INDUSTRY_PATHS } from "@/lib/industries";
 import { getInternalLinks } from "@/lib/internal-links";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs, { type Crumb } from "@/components/Breadcrumbs";
@@ -17,9 +18,13 @@ export function generateStaticParams() {
   // Blog articles have their own dedicated `/blog/[slug]` route backed by the
   // blog database. Including them here creates static catch-all pages for the
   // same URLs, which makes every article render the generic insight content.
-  return insightLinks.filter((link) => link.category !== "blog").map((link) => ({
-    slug: link.path.split("/").filter(Boolean),
-  }));
+  // The industry pages in BUILT_INDUSTRY_PATHS are excluded for the same
+  // reason: each has a dedicated route with approved, hand-built content.
+  return insightLinks
+    .filter((link) => link.category !== "blog" && !BUILT_INDUSTRY_PATHS.includes(link.path))
+    .map((link) => ({
+      slug: link.path.split("/").filter(Boolean),
+    }));
 }
 
 type PageProps = {

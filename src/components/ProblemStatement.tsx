@@ -9,15 +9,14 @@ const ProblemStatement = () => {
       data-nav-theme="orange"
       className="py-32 px-6 bg-zolix-orange text-white overflow-hidden relative"
     >
-      {/* Radar Scan Effect */}
+      {/* Radar Scan Effect — a CSS keyframe animation rather than a framer-motion
+          `repeat: Infinity` one. Both look identical, but the JS version drove a
+          1000px element from the main thread for the entire session, on screen
+          or not; the CSS transform runs on the compositor instead. */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] pointer-events-none">
-        <motion.div 
-          animate={{ rotate: 360 }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="w-full h-full border border-white/10 rounded-full relative"
-        >
+        <div className="radar-spin w-full h-full border border-white/10 rounded-full relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1/2 bg-gradient-to-t from-transparent to-white/20 blur-sm origin-bottom" />
-        </motion.div>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -26,20 +25,24 @@ const ProblemStatement = () => {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              className="inline-flex items-center gap-3 bg-white/10 px-6 py-2 rounded-full mb-10 border border-white/20 backdrop-blur-md"
+              className="inline-flex items-center gap-3 bg-white/10 px-6 py-2 rounded-full mb-10 border border-white/20"
             >
               <ShieldAlert size={18} className="text-white animate-pulse" />
               <span className="text-[10px] font-bold uppercase tracking-widest">The 2026 Crisis Detected</span>
             </motion.div>
             
-            <h2 className="text-6xl md:text-8xl font-bold tracking-tighter mb-12 leading-[0.9] text-white">
-              AI & Cloud waste is<br />
-              <span className="text-zolix-dark italic">Slowing</span>  <br />
-              growth.
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-12 leading-[0.95] text-white">
+              Why Cloud Cost <br />
+              Management Tools <br />
+              <span className="text-zolix-dark italic">Fall Short</span>
             </h2>
-            
-            <p className="text-xl text-white/80 font-medium max-w-xl leading-relaxed mb-12">
-              Enterprises are losing up to 35% of their infrastructure budget to &quot;zombie&quot; resources, over-provisioned LLMs, and inefficient GPU clusters. Manual FinOps can&apos;t keep up with the speed of AI.
+
+            <p className="text-xl text-white/80 font-medium max-w-xl leading-relaxed mb-10">
+              Traditional FinOps tools were built for virtual machines and static workloads. They weren&apos;t built for GPU clusters, LLM inference costs, or infrastructure that scales 10x overnight.
+            </p>
+
+            <p className="text-lg font-bold text-white max-w-xl leading-relaxed mb-12">
+              Zolix was built to close these gaps - not patch around them.
             </p>
 
             <div className="grid grid-cols-2 gap-8">
@@ -73,19 +76,16 @@ const ProblemStatement = () => {
 
               <div className="space-y-8">
                 {[
-                  { label: "Unallocated AI training costs", status: "Critical" },
-                  { label: "Idle GPU instances in dev environments", status: "High Waste" },
-                  { label: "Fragmented multi-cloud billing", status: "Inconsistent" },
-                  { label: "Lack of unit economics for LLMs", status: "No Visibility" }
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between group">
-                    <div className="flex items-center gap-6">
-                      <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-zolix-orange transition-colors">
-                        <Radar size={20} className="text-white/20 group-hover:text-white" />
-                      </div>
-                      <span className="text-lg font-bold opacity-60 group-hover:opacity-100 transition-opacity text-white">{item.label}</span>
+                  "Legacy tools flag problems. They don't fix them.",
+                  "Threshold-based alerts miss AI-specific waste patterns.",
+                  "Multi-cloud visibility is fragmented across separate dashboards.",
+                  "GPU and inference costs get buried inside general computer spend."
+                ].map((label) => (
+                  <div key={label} className="flex items-center gap-6 group">
+                    <div className="w-12 h-12 shrink-0 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-zolix-orange transition-colors">
+                      <Radar size={20} className="text-white/20 group-hover:text-white" />
                     </div>
-                    <span className="text-[8px] font-bold uppercase tracking-widest text-zolix-orange px-3 py-1 bg-zolix-orange/10 rounded-full">{item.status}</span>
+                    <span className="text-base font-bold opacity-60 group-hover:opacity-100 transition-opacity text-white leading-snug">{label}</span>
                   </div>
                 ))}
               </div>
@@ -93,11 +93,7 @@ const ProblemStatement = () => {
               <div className="mt-12 pt-10 border-t border-white/5 text-center">
                 <div className="text-[10px] font-bold uppercase tracking-widest opacity-30 text-white mb-4">Scanning 10,000+ Best Practices...</div>
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                  <motion.div 
-                    animate={{ x: ["-100%", "100%"] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    className="h-full w-1/3 bg-zolix-orange"
-                  />
+                  <div className="scan-sweep h-full w-1/3 bg-zolix-orange" />
                 </div>
               </div>
             </div>

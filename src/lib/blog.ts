@@ -1,5 +1,6 @@
 import "server-only";
 import { Pool } from "pg";
+import type { FaqItem } from "@/lib/faq-extract";
 
 export type BlogStatus = "draft" | "published";
 
@@ -13,6 +14,7 @@ export type Blog = {
   coverImage: { url: string; alt: string };
   category: string;
   tags: string[];
+  faqs: FaqItem[];
   status: BlogStatus;
   featured: boolean;
   seo: { title: string; description: string };
@@ -21,7 +23,7 @@ export type Blog = {
   updatedAt: string;
 };
 
-type BlogInput = Pick<Blog, "title" | "subtitle" | "content" | "category" | "tags" | "status" | "featured"> & {
+type BlogInput = Pick<Blog, "title" | "subtitle" | "content" | "category" | "tags" | "faqs" | "status" | "featured"> & {
   coverImage?: { url?: string; alt?: string };
 };
 
@@ -51,6 +53,7 @@ async function initialize() {
       cover_image_alt TEXT NOT NULL DEFAULT 'ZOLIX AI',
       category TEXT NOT NULL,
       tags TEXT[] NOT NULL DEFAULT '{}',
+      faqs JSONB NOT NULL DEFAULT '[]'::jsonb,
       status TEXT NOT NULL CHECK (status IN ('draft', 'published')) DEFAULT 'draft',
       featured BOOLEAN NOT NULL DEFAULT false,
       likes INTEGER NOT NULL DEFAULT 0 CHECK (likes >= 0),
@@ -61,6 +64,9 @@ async function initialize() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     CREATE INDEX IF NOT EXISTS blogs_public_index ON blogs (status, published_at DESC);
+    -- CREATE TABLE IF NOT EXISTS skips tables that already exist, so columns added
+    -- after the first deployment have to be applied separately.
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS faqs JSONB NOT NULL DEFAULT '[]'::jsonb;
   `);
 }
 
@@ -75,7 +81,9 @@ function mapBlog(row: Record<string, unknown>): Blog {
     id: row.id as string, title: row.title as string, slug: row.slug as string,
     subtitle: row.subtitle as string | null, excerpt: row.excerpt as string, content: row.content as string,
     coverImage: { url: row.cover_image_url as string, alt: row.cover_image_alt as string },
-    category: row.category as string, tags: row.tags as string[], status: row.status as BlogStatus,
+    category: row.category as string, tags: row.tags as string[],
+    faqs: Array.isArray(row.faqs) ? (row.faqs as FaqItem[]) : [],
+    status: row.status as BlogStatus,
     featured: row.featured as boolean,
     seo: { title: row.seo_title as string, description: row.seo_description as string },
     publishedAt: row.published_at ? new Date(row.published_at as string).toISOString() : null,
@@ -83,7 +91,7 @@ function mapBlog(row: Record<string, unknown>): Blog {
   };
 }
 
-const fields = "id,title,slug,subtitle,excerpt,content,cover_image_url,cover_image_alt,category,tags,status,featured,seo_title,seo_description,published_at,created_at,updated_at";
+const fields = "id,title,slug,subtitle,excerpt,content,cover_image_url,cover_image_alt,category,tags,faqs,status,featured,seo_title,seo_description,published_at,created_at,updated_at";
 
 export async function getBlogs(publicOnly = false) {
   const db = await ready();
@@ -107,14 +115,15 @@ async function uniqueSlug(title: string, ignoreId?: string) {
 
 function normalized(input: BlogInput) {
   const title = input.title.trim(); const content = input.content.trim(); const excerpt = stripHtml(content).slice(0, 200) || title;
-  return { title, subtitle: input.subtitle?.trim() || null, content, excerpt, category: input.category.trim(), tags: input.tags.filter(Boolean), status: input.status, featured: input.featured, url: input.coverImage?.url?.trim() || "/assets/logo.webp", alt: input.coverImage?.alt?.trim() || title, seoTitle: title, seoDescription: excerpt };
+  const faqs = (input.faqs ?? []).map(({ q, a }) => ({ q: q.trim(), a: a.trim() })).filter((item) => item.q && item.a);
+  return { title, subtitle: input.subtitle?.trim() || null, content, excerpt, category: input.category.trim(), tags: input.tags.filter(Boolean), faqs, status: input.status, featured: input.featured, url: input.coverImage?.url?.trim() || "/assets/logo.webp", alt: input.coverImage?.alt?.trim() || title, seoTitle: title, seoDescription: excerpt };
 }
 
 export async function createBlog(input: BlogInput) {
   const value = normalized(input); const slug = await uniqueSlug(value.title); const db = await ready();
-  const result = await db.query(`INSERT INTO blogs (title,slug,subtitle,excerpt,content,cover_image_url,cover_image_alt,category,tags,status,featured,seo_title,seo_description,published_at)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,CASE WHEN $10 = 'published' THEN NOW() ELSE NULL END) RETURNING ${fields}`,
-    [value.title,slug,value.subtitle,value.excerpt,value.content,value.url,value.alt,value.category,value.tags,value.status,value.featured,value.seoTitle,value.seoDescription]);
+  const result = await db.query(`INSERT INTO blogs (title,slug,subtitle,excerpt,content,cover_image_url,cover_image_alt,category,tags,faqs,status,featured,seo_title,seo_description,published_at)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,CASE WHEN $11 = 'published' THEN NOW() ELSE NULL END) RETURNING ${fields}`,
+    [value.title,slug,value.subtitle,value.excerpt,value.content,value.url,value.alt,value.category,value.tags,JSON.stringify(value.faqs),value.status,value.featured,value.seoTitle,value.seoDescription]);
   return mapBlog(result.rows[0]);
 }
 
@@ -124,8 +133,8 @@ export async function updateBlog(id: string, input: BlogInput) {
   const existing = await db.query<{ slug: string }>("SELECT slug FROM blogs WHERE id = $1", [id]);
   if (!existing.rows[0]) return null;
   const slug = existing.rows[0].slug;
-  const result = await db.query(`UPDATE blogs SET title=$2,slug=$3,subtitle=$4,excerpt=$5,content=$6,cover_image_url=$7,cover_image_alt=$8,category=$9,tags=$10,status=$11,featured=$12,seo_title=$13,seo_description=$14,published_at=CASE WHEN $11='published' THEN COALESCE(published_at,NOW()) ELSE NULL END,updated_at=NOW() WHERE id=$1 RETURNING ${fields}`,
-    [id,value.title,slug,value.subtitle,value.excerpt,value.content,value.url,value.alt,value.category,value.tags,value.status,value.featured,value.seoTitle,value.seoDescription]);
+  const result = await db.query(`UPDATE blogs SET title=$2,slug=$3,subtitle=$4,excerpt=$5,content=$6,cover_image_url=$7,cover_image_alt=$8,category=$9,tags=$10,faqs=$11,status=$12,featured=$13,seo_title=$14,seo_description=$15,published_at=CASE WHEN $12='published' THEN COALESCE(published_at,NOW()) ELSE NULL END,updated_at=NOW() WHERE id=$1 RETURNING ${fields}`,
+    [id,value.title,slug,value.subtitle,value.excerpt,value.content,value.url,value.alt,value.category,value.tags,JSON.stringify(value.faqs),value.status,value.featured,value.seoTitle,value.seoDescription]);
   return result.rows[0] ? mapBlog(result.rows[0]) : null;
 }
 

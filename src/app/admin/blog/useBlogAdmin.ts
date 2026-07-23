@@ -58,7 +58,7 @@ export function useBlogAdmin(notify: (kind: ToastKind, message: string) => void)
     setEditing(blog.id);
     setForm({
       title: blog.title, subtitle: blog.subtitle, content: blog.content, category: blog.category,
-      tags: blog.tags, status: blog.status, featured: blog.featured, coverImage: blog.coverImage,
+      tags: blog.tags, faqs: blog.faqs, status: blog.status, featured: blog.featured, coverImage: blog.coverImage,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }

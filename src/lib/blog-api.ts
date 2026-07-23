@@ -19,6 +19,15 @@ export async function blogPayload(request: NextRequest) {
     title: String(body.title), subtitle: typeof body.subtitle === "string" ? body.subtitle : null,
     content: sanitizeBlogContent(String(body.content)), category: String(body.category),
     tags: Array.isArray(body.tags) ? body.tags.filter((tag: unknown): tag is string => typeof tag === "string").slice(0, 20) : [],
+    // Answers render as text in the accordion, so they stay plain strings rather than HTML.
+    faqs: Array.isArray(body.faqs)
+      ? body.faqs
+          .filter((item: unknown): item is { q: string; a: string } =>
+            Boolean(item) && typeof (item as { q?: unknown }).q === "string" && typeof (item as { a?: unknown }).a === "string")
+          .map(({ q, a }: { q: string; a: string }) => ({ q: q.trim(), a: a.trim() }))
+          .filter((item: { q: string; a: string }) => item.q && item.a)
+          .slice(0, 25)
+      : [],
     status: body.status as BlogStatus, featured: Boolean(body.featured),
     coverImage: { url: typeof body.coverImage?.url === "string" ? body.coverImage.url : "", alt: typeof body.coverImage?.alt === "string" ? body.coverImage.alt : "" },
   };
