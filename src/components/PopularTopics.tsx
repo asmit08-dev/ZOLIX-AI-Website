@@ -10,6 +10,9 @@ export default function PopularTopics() {
   const links = getInternalLinks("/");
   if (links.length === 0) return null;
 
+  const capitalizeFirstLetter = (text: string) =>
+    text.charAt(0).toUpperCase() + text.slice(1);
+
   return (
     <section className="py-24 px-6 bg-white border-t border-zolix-dark/5">
       <div className="max-w-6xl mx-auto text-center">
@@ -23,7 +26,7 @@ export default function PopularTopics() {
               href={link.href}
               className="group inline-flex items-center gap-2 bg-zolix-beige px-6 py-3 rounded-full border border-zolix-dark/5 text-sm font-semibold text-zolix-dark hover:bg-zolix-dark hover:text-white transition-all"
             >
-              {link.anchor}
+              {capitalizeFirstLetter(link.anchor)}
               <ArrowUpRight
                 size={14}
                 className="text-zolix-orange group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"

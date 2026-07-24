@@ -102,6 +102,29 @@ export const MANUFACTURING_LOGISTICS_FAQ: FaqItem[] = [
   },
 ];
 
+export const HEALTHCARE_LIFE_SCIENCES_FAQ: FaqItem[] = [
+  {
+    q: "Does Zolix require write access to systems holding patient data?",
+    a: "No. Zolix is read-only and zero-agent by design, and never requires write access to any environment, including those holding patient or clinical data.",
+  },
+  {
+    q: "Can Zolix identify imaging data that could move to cheaper storage?",
+    a: "Yes. Access patterns are tracked so infrequently accessed studies can be flagged for a lower-cost tier, without changing retention policy.",
+  },
+  {
+    q: "Does this affect HIPAA compliance?",
+    a: "No. Zolix operates within existing compliance boundaries and does not require new access grants, agents, or exceptions.",
+  },
+  {
+    q: "Can genomics or research compute be tracked separately from clinical systems?",
+    a: "Yes. Research and sequencing workloads are tracked apart from clinical production infrastructure, so a busy research week does not disappear inside the overall bill.",
+  },
+  {
+    q: "How quickly can we see where healthcare cloud spend is going?",
+    a: "Most teams get a first cost visibility report within 24 hours of connecting accounts, with no changes made to live systems.",
+  },
+];
+
 export const GOVERNMENT_FAQ: FaqItem[] = [
   {
     q: "Does this require write access to our environments?",
@@ -118,5 +141,32 @@ export const GOVERNMENT_FAQ: FaqItem[] = [
   {
     q: "How does this support an audit request?",
     a: "Cost breakdowns remain traceable to specific programs and funding sources on an ongoing basis, reducing the manual reconstruction typically required when a request arrives.",
+  },
+];
+
+export const RETAIL_ECOMMERCE_FAQ: FaqItem[] = [
+  {
+    q: "What are the benefits of cost optimization on Zolix, and how does it help retailers respond to demand changes faster?",
+    a: "Zolix replaces static, after-the-fact cost reports with real-time visibility mapped to channels and campaigns. During a flash sale, viral product moment, or holiday traffic spike, teams can see what is driving cost before the bill compounds.",
+  },
+  {
+    q: "How does Zolix help retail businesses during peak seasons?",
+    a: "Zolix tracks capacity provisioned for seasonal spikes and flags it once the spike has passed, so a sale-time scale-up does not quietly become weeks of capacity that was never scaled down. Forecasting follows your actual sales calendar rather than a flat monthly average.",
+  },
+  {
+    q: "Can Zolix help optimize costs across a multi-channel retail stack?",
+    a: "Yes. Spend is broken down by storefront, marketplace, mobile app, and in-store systems, so a promotion running across several channels shows up as one traceable number instead of scattered line items.",
+  },
+  {
+    q: "Does Zolix require access to our payment or customer data systems?",
+    a: "No. Zolix operates on a read-only, zero-agent model. Cost visibility is achieved without write access to any system, including those handling payment or customer data.",
+  },
+  {
+    q: "How long does it take to get visibility into our retail cloud spend?",
+    a: "Most teams connect their accounts and receive a first cost visibility report within 24 hours, with no changes required to existing storefront infrastructure.",
+  },
+  {
+    q: "Does Zolix support multi-cloud retail environments?",
+    a: "Yes. Zolix connects across AWS, Azure, GCP, and OCI, giving retailers with more than one provider a consolidated view instead of separate dashboards.",
   },
 ];

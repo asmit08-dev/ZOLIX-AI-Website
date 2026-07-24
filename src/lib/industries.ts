@@ -15,7 +15,9 @@ export const BUILT_INDUSTRY_SLUGS = [
   "technology",
   "financial-services",
   "education",
+  "healthcare-life-sciences",
   "manufacturing-logistics",
+  "retail-ecommerce",
   "government",
 ] as const;
 

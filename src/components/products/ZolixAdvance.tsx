@@ -1,4 +1,5 @@
 import { Zap, ArrowRight, Lock, Users, BarChart } from 'lucide-react';
+import EmailComposeLink from "@/components/EmailComposeLink";
 
 const ZolixAdvance = () => {
   return (
@@ -14,9 +15,9 @@ const ZolixAdvance = () => {
           <p className="text-xl text-zolix-dark/40 font-bold leading-relaxed mb-12">
             Unlock enterprise-grade capabilities with ZOLIX Advance — the complete Cloud FinOps operating system. Designed for enterprises spending over $25,000/month on cloud infrastructure.
           </p>
-          <a href="mailto:info@zolix.ai" className="bg-zolix-dark text-white px-10 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-zolix-orange transition-all inline-flex items-center gap-3 shadow-xl shadow-zolix-dark/10">
+          <EmailComposeLink className="bg-zolix-dark text-white px-10 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-zolix-orange transition-all inline-flex items-center gap-3 shadow-xl shadow-zolix-dark/10">
             Request Enterprise Demo <ArrowRight size={16} />
-          </a>
+          </EmailComposeLink>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 mb-24">

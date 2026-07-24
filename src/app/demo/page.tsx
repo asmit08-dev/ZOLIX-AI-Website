@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock, ShieldCheck } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import EmailComposeLink from "@/components/EmailComposeLink";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata("/demo");
@@ -43,13 +44,13 @@ export default function DemoPage() {
               <ArrowRight size={20} strokeWidth={3} />
             </div>
           </a>
-          <a
-            href="mailto:info@zolix.ai?subject=ZOLIX%20AI%20Demo%20Request"
+          <EmailComposeLink
+            subject="ZOLIX AI Demo Request"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-zolix-dark/10 text-[10px] font-bold uppercase tracking-[0.3em] text-zolix-dark hover:border-zolix-orange hover:text-zolix-orange transition-colors"
           >
             Talk to sales
             <ArrowRight size={14} />
-          </a>
+          </EmailComposeLink>
         </div>
 
         <div className="grid md:grid-cols-2 gap-16 items-start">
@@ -83,9 +84,7 @@ export default function DemoPage() {
                 view pricing
               </Link>{" "}
               or reach us at{" "}
-              <a href="mailto:info@zolix.ai" className="text-zolix-orange font-semibold hover:underline">
-                info@zolix.ai
-              </a>
+              <EmailComposeLink className="text-zolix-orange font-semibold hover:underline">support@zolix.ai</EmailComposeLink>
               .
             </p>
           </div>

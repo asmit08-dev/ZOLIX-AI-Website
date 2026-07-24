@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, ExternalLink } from "lucide-react";
+import LinkedinIcon from "./icons/LinkedinIcon";
 
 const SURFACE_HOME = "rgb(237, 233, 223)";
 const SURFACE_DEFAULT = "rgb(255, 255, 255)";
@@ -38,6 +39,7 @@ const Navbar = () => {
   const logoPath = "/assets/logo.webp";
   const nvidiaLink =
     "https://www.linkedin.com/posts/nvidiainception-nvidiainception-nvidia-share-7476253289840300033-oIdK/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAASxijABW_7AUlIHWla-7bLDy1ile3fe1tU";
+  const linkedinLink = "https://www.linkedin.com/company/zolix-ai-engine/?viewAsMember=true";
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -102,6 +104,15 @@ const Navbar = () => {
                 </Link>
               ))}
               <a
+                href={linkedinLink}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Follow Zolix on LinkedIn"
+                className="nav-link grid h-8 w-8 place-items-center rounded-full border border-zolix-dark/15 transition-all hover:border-zolix-orange hover:bg-zolix-orange hover:text-white"
+              >
+                <LinkedinIcon size={14} />
+              </a>
+              <a
                 href="https://lite.zolix.ai/signup"
                 target="_blank"
                 rel="noreferrer"
@@ -150,6 +161,15 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <a
+              href={linkedinLink}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 flex w-fit items-center gap-3 text-sm font-bold uppercase tracking-[0.15em] opacity-70 transition-opacity hover:opacity-100"
+            >
+              <LinkedinIcon size={17} />
+              Follow us on LinkedIn
+            </a>
             <a
               href="https://lite.zolix.ai/signup"
               target="_blank"

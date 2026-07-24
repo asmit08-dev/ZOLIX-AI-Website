@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Check, ArrowRight, Zap, Shield, Globe, Mail } from 'lucide-react';
 import LinkedinIcon from './icons/LinkedinIcon';
 import TwitterIcon from './icons/TwitterIcon';
+import EmailComposeLink from './EmailComposeLink';
 
 const tiers = [
   {
@@ -44,7 +45,7 @@ const Pricing = () => {
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Transparent Pricing</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Choose the plan that fits your scale. Contact <a href="mailto:info@zolix.ai" className="text-zolix-orange font-bold">info@zolix.ai</a> for custom quotes.
+            Choose the plan that fits your scale. Contact <EmailComposeLink className="text-zolix-orange font-bold">support@zolix.ai</EmailComposeLink> for custom quotes.
           </p>
         </div>
 
@@ -108,15 +109,15 @@ const Pricing = () => {
               </p>
 
               <div className="space-y-4">
-                <a href="mailto:info@zolix.ai" className="flex items-center gap-5 p-5 bg-zolix-beige rounded-2xl hover:bg-zolix-dark hover:text-white transition-all group">
+                <EmailComposeLink className="flex items-center gap-5 p-5 bg-zolix-beige rounded-2xl hover:bg-zolix-dark hover:text-white transition-all group">
                   <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center group-hover:bg-zolix-orange">
                     <Mail size={20} />
                   </div>
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 group-hover:opacity-60">Email Us</div>
-                    <div className="text-lg font-bold">info@zolix.ai</div>
+                    <div className="text-lg font-bold">support@zolix.ai</div>
                   </div>
-                </a>
+                </EmailComposeLink>
               </div>
             </div>
 

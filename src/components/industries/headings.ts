@@ -16,6 +16,8 @@ export const INDUSTRY_H1: Record<IndustrySlug, string> = {
   // alternative heading, so the approved SEO-sheet H1 stands.
   "financial-services": "Cloud Cost Optimization Solutions for Financial Services",
   education: "Supporting Cost-Efficient Growth for Education Institutions",
+  "healthcare-life-sciences": "Cloud Cost Visibility for Healthcare & Life Sciences",
   "manufacturing-logistics": "Cloud Cost Optimization Solutions for Manufacturing & Logistics",
+  "retail-ecommerce": "Cloud Cost Optimization Solutions for Retail & eCommerce",
   government: "Cloud Cost Optimization Solutions for Government Agencies",
 };

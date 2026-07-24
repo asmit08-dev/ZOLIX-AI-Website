@@ -21,7 +21,7 @@ export function generateStaticParams() {
   // The industry pages in BUILT_INDUSTRY_PATHS are excluded for the same
   // reason: each has a dedicated route with approved, hand-built content.
   return insightLinks
-    .filter((link) => link.category !== "blog" && !BUILT_INDUSTRY_PATHS.includes(link.path))
+    .filter((link) => link.category !== "blog" && !BUILT_INDUSTRY_PATHS.includes(link.path) && link.path !== "/technologies/azure")
     .map((link) => ({
       slug: link.path.split("/").filter(Boolean),
     }));
