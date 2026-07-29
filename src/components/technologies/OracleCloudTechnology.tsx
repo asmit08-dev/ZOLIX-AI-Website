@@ -1,0 +1,71 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { ArrowLeftRight, ArrowRight, CreditCard, Cpu, Database, Eye, FolderTree, Gauge, ShieldCheck, TrendingUp } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import FAQ, { type FaqItem } from "@/components/FAQ";
+
+const discipline = [
+  ["Inform - See Where OCI Spend Is Actually Going", "You can't manage what you can't see, and most teams running OCI alongside other clouds end up checking a separate console just to understand Oracle spend. Zolix pulls OCI cost and usage data into the same view as every other cloud you run, broken down by compartment, tag, service, and region.", Eye],
+  ["Optimize - Turn Visibility Into Savings", "Seeing spend is only half the job. Zolix identifies specific savings opportunities across OCPU sizing, flexible shape rightsizing, Universal Credit utilization, and unattached block storage - ranked by impact, so the highest-value fix surfaces first.", TrendingUp],
+  ["Operate - Keep Costs Under Control as You Scale", "Cost discipline breaks down the moment nobody's watching continuously. Zolix keeps monitoring after the initial cleanup, flagging new waste as it appears, so cost control doesn't quietly lapse a few months after the first review.", Gauge],
+] as const;
+
+const pricingLevers = [
+  ["OCPU and Flexible Shape Sizing", "OCI's compute pricing is built around OCPUs rather than fixed instance sizes, and flexible shapes let you dial CPU and memory independently. Zolix analyzes real utilization against your current shape configuration and flags where a smaller, cheaper shape would deliver the same performance.", Cpu],
+  ["Universal Credits Utilization", "Many OCI customers commit to Universal Credits upfront, but tracking how much of that commitment is actually being consumed tends to fall through the cracks after the initial purchase. Zolix tracks consumption against commitment continuously, flagging both underuse and overage before either becomes a problem.", CreditCard],
+  ["Autonomous Database and Exadata Cost Tracking", "Autonomous Database and Exadata Cloud Service workloads carry their own cost profile, often running at a scale that doesn't map cleanly onto general compute spend. Zolix tracks these separately, so database infrastructure cost has its own clear line of visibility.", Database],
+  ["Egress and Intra-Region Traffic Economics", "OCI is known for cheaper egress and free intra-region traffic compared to other major clouds - but that advantage only pays off if your architecture is actually taking advantage of it. Zolix flags data transfer patterns that aren't making use of OCI's regional traffic economics.", ArrowLeftRight],
+  ["Compartment-Level Attribution", "OCI organizes resources into compartments rather than accounts or resource groups. Zolix maps spend to the compartment level directly, so cost visibility follows the way your OCI tenancy is actually structured, not a generic tagging scheme layered on top.", FolderTree],
+] as const;
+
+function Button({ href, children, light = false }: { href: string; children: ReactNode; light?: boolean }) {
+  const className = `group inline-flex items-center gap-3 rounded-full px-7 py-4 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors ${light ? "bg-white text-zolix-dark hover:bg-zolix-orange hover:text-white" : "bg-zolix-dark text-white hover:bg-zolix-orange"}`;
+  const content = <>{children}<ArrowRight size={15} strokeWidth={3} className="transition-transform duration-200 group-hover:translate-x-1" /></>;
+  return href.startsWith("http") ? <a href={href} target="_blank" rel="noreferrer" className={className}>{content}</a> : <Link href={href} className={className}>{content}</Link>;
+}
+
+const reveal = { initial: { opacity: 0, y: 16 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.18 } };
+
+export default function OracleCloudTechnology({ faqs, breadcrumbs }: { faqs: FaqItem[]; breadcrumbs: ReactNode }) {
+  return <>
+    <section data-nav-theme="beige" className="relative overflow-hidden bg-zolix-beige px-6 pb-20 pt-40 md:pb-28">
+      <div className="absolute -right-24 top-10 h-[34rem] w-[34rem] rounded-full border border-zolix-orange/15" />
+      <div className="absolute right-32 top-48 h-60 w-60 rounded-full bg-zolix-orange/15 blur-3xl" />
+      <div className="relative mx-auto max-w-7xl">
+        {breadcrumbs}
+        <div className="grid gap-14 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+          <div>
+            <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-7 text-[10px] font-bold uppercase tracking-[0.22em] text-zolix-orange">Technology / Oracle Cloud</motion.p>
+            <motion.h1 initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="max-w-3xl text-5xl font-extrabold leading-[.94] tracking-[-0.06em] text-zolix-dark md:text-7xl">Cloud Cost Optimization Solutions for Oracle Cloud</motion.h1>
+            <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="mt-8 max-w-2xl text-lg font-medium leading-relaxed text-zolix-dark/60 md:text-xl">OCI prices things differently than AWS, Azure, or GCP - OCPU-based compute, Universal Credits, flexible shapes, and famously cheaper egress. A cost tool built primarily for the other three tends to miss what actually drives an Oracle Cloud bill. Zolix was built to read OCI on its own terms.</motion.p>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-10 flex flex-wrap gap-4"><Button href="/demo">Book a Demo</Button></motion.div>
+          </div>
+          <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.1 }} className="relative mx-auto w-full max-w-lg rounded-[2rem] border border-zolix-dark/10 bg-white/70 p-6 shadow-[0_24px_70px_rgba(26,26,26,0.08)] backdrop-blur-sm md:p-8">
+            <div className="flex items-center justify-between border-b border-zolix-dark/10 pb-5 text-[9px] font-bold uppercase tracking-[0.18em]"><span className="text-zolix-dark/45">OCI on its own terms</span><span className="flex items-center gap-2 text-zolix-orange"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-zolix-orange" />Continuous</span></div>
+            <div className="mt-7 space-y-3">
+              {[["OCPU shapes", "Flexible compute sizing", Cpu], ["Universal Credits", "Commitment vs. consumption", CreditCard], ["Compartments", "Spend mapped to structure", FolderTree]].map(([title, label, Icon], index) => {
+                const NodeIcon = Icon as typeof Cpu;
+                return <motion.div key={title as string} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.32 + index * 0.1 }} className="relative flex items-center gap-4 rounded-2xl bg-zolix-beige/70 p-4"><span className="relative z-10 grid h-7 w-7 place-items-center rounded-full bg-zolix-dark text-white"><NodeIcon size={13} /></span><div><p className="text-sm font-bold text-zolix-dark">{title as string}</p><p className="mt-0.5 text-xs font-medium text-zolix-dark/45">{label as string}</p></div><span className="ml-auto text-[9px] font-bold uppercase tracking-wider text-zolix-orange">Mapped</span></motion.div>;
+              })}
+            </div>
+            <p className="mt-7 border-t border-zolix-dark/10 pt-5 text-sm font-medium leading-relaxed text-zolix-dark/50">Oracle Cloud spend shown alongside every other cloud you run - not in a separate console.</p>
+          </motion.div>
+        </div>
+        <div className="mt-16 grid gap-3 border-t border-zolix-dark/10 pt-6 sm:grid-cols-3"><p className="flex items-center gap-3 text-xs font-bold text-zolix-dark/65"><ShieldCheck size={16} className="text-zolix-orange" />Read-only IAM practices</p><p className="flex items-center gap-3 text-xs font-bold text-zolix-dark/65"><FolderTree size={16} className="text-zolix-orange" />Compartment-level mapping</p><p className="flex items-center gap-3 text-xs font-bold text-zolix-dark/65"><CreditCard size={16} className="text-zolix-orange" />Universal Credit tracking</p></div>
+      </div>
+    </section>
+
+    <section data-nav-theme="light" className="bg-white px-6 py-24 md:py-32"><div className="mx-auto max-w-7xl"><div className="grid gap-12 lg:grid-cols-2 lg:items-start"><div><h2 className="text-4xl font-bold leading-[1.05] tracking-[-0.05em] text-zolix-dark md:text-6xl">Bringing Financial Discipline to Oracle Cloud</h2><p className="mt-6 max-w-xl text-lg font-medium leading-relaxed text-zolix-dark/55">OCI&apos;s flexible shapes, Universal Credits, and compartment model need continuous attention as your infrastructure evolves. Zolix keeps that cost picture clear without making teams work from a separate console.</p><div className="mt-8"><Button href="/demo">Book a Demo</Button></div></div><motion.div {...reveal} className="relative min-h-[26rem] overflow-hidden rounded-2xl bg-zolix-dark shadow-[0_18px_45px_rgba(155,85,0,.16)]"><Image src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=85" alt="Cloud engineering workspace representing Oracle Cloud infrastructure" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" /><div className="absolute inset-0 bg-gradient-to-r from-zolix-dark/90 via-zolix-dark/35 to-transparent" /><div className="absolute inset-x-5 bottom-5 flex items-end justify-between"><span className="rounded-full border border-white/20 bg-zolix-dark/55 px-3 py-2 text-[9px] font-bold uppercase tracking-[.16em] text-white backdrop-blur-md">OCI cost intelligence</span><a href="https://unsplash.com/license" target="_blank" rel="noreferrer" className="text-[7px] font-medium text-white/60 underline-offset-2 hover:text-white hover:underline">Photo licensed via Unsplash</a></div></motion.div></div><div className="mt-20 grid gap-x-14 gap-y-2 md:mt-28 md:grid-cols-3">{discipline.map(([title, desc, Icon], index) => <motion.article key={title} {...reveal} transition={{ delay: index * 0.06 }} className="group flex items-center gap-5 rounded-2xl px-4 py-8 transition-all duration-300 hover:bg-zolix-beige/70 md:items-start md:py-10"><span className="grid h-12 w-12 shrink-0 place-items-center self-center rounded-xl bg-zolix-beige text-zolix-orange transition-transform duration-300 group-hover:-translate-y-0.5 md:self-auto"><Icon size={21} /></span><div className="flex-1"><h3 className="text-xl font-bold tracking-tight text-zolix-dark">{title}</h3><p className="mt-4 text-[15px] font-medium leading-relaxed text-zolix-dark/55">{desc}</p></div></motion.article>)}</div><div className="mt-16 rounded-3xl bg-zolix-dark px-8 py-14 text-center text-white md:px-16 md:py-16"><h3 className="text-3xl font-bold leading-none tracking-[-0.05em] md:text-5xl">Ready to Bring This Discipline to Your OCI Tenancy?</h3><div className="mt-8 flex flex-wrap justify-center gap-4"><Button href="/demo" light>Book a Demo</Button></div></div></div></section>
+
+    <section data-nav-theme="beige" className="bg-zolix-beige px-6 py-24 md:py-32"><div className="mx-auto max-w-7xl"><div className="max-w-3xl"><p className="mb-5 text-[10px] font-bold uppercase tracking-[0.22em] text-zolix-orange">Purpose-built capabilities</p><h2 className="text-4xl font-bold leading-none tracking-[-0.05em] text-zolix-dark md:text-6xl">Built for How OCI Actually Prices Things</h2></div><div className="mt-16 grid gap-x-14 gap-y-10 md:grid-cols-2">{pricingLevers.map(([title, desc, Icon], index) => <motion.article key={title} {...reveal} transition={{ delay: (index % 2) * 0.06 }} className="group border-t border-zolix-dark/15 pt-6"><div className="flex items-start gap-5"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-zolix-orange transition-transform duration-300 group-hover:-translate-y-1"><Icon size={21} /></span><div><h3 className="text-xl font-bold tracking-tight text-zolix-dark">{title}</h3><p className="mt-3 text-[15px] font-medium leading-relaxed text-zolix-dark/55">{desc}</p></div></div></motion.article>)}</div></div></section>
+
+    <section data-nav-theme="dark" className="bg-zolix-dark px-6 py-20 text-white md:py-24"><div className="mx-auto max-w-7xl"><p className="mb-10 text-[10px] font-bold uppercase tracking-[0.22em] text-zolix-orange">What teams see after connecting OCI to Zolix</p><div className="grid gap-10 border-t border-white/15 pt-9 md:grid-cols-3"><div><p className="text-3xl font-extrabold tracking-[-0.06em] text-zolix-orange md:text-4xl">Unified View</p><p className="mt-4 text-sm font-medium leading-relaxed text-white/60">Oracle Cloud spend shown alongside every other cloud you run, not in a separate console.</p></div><div><p className="text-3xl font-extrabold tracking-[-0.06em] text-zolix-orange md:text-4xl">24 Hours</p><p className="mt-4 text-sm font-medium leading-relaxed text-white/60">to a first cost visibility report across every connected compartment.</p></div><div><p className="text-3xl font-extrabold tracking-[-0.06em] text-zolix-orange md:text-4xl">Zero Agents</p><p className="mt-4 text-sm font-medium leading-relaxed text-white/60">Read-only access - Zolix connects following Oracle&apos;s own recommended IAM practices, with no write access required at setup or afterward.</p></div></div></div></section>
+
+    <FAQ items={faqs} theme="beige" />
+
+    <section data-nav-theme="dark" className="bg-zolix-dark px-6 py-20 text-white md:py-28"><div className="mx-auto max-w-5xl text-center"><ShieldCheck size={28} className="mx-auto text-zolix-orange" /><h2 className="mt-8 text-4xl font-bold leading-none tracking-[-0.05em] md:text-6xl">Bring the Same Financial Discipline to Oracle Cloud You Have Everywhere Else</h2><p className="mx-auto mt-7 max-w-2xl text-lg font-medium leading-relaxed text-white/60">Connect your OCI tenancy through read-only access and see Oracle Cloud spend in the same view as every other cloud you run - no agents, no code changes, no separate console to remember.</p><div className="mt-10 flex flex-wrap justify-center gap-4"><Button href="/demo" light>Book a Demo</Button></div></div></section>
+  </>;
+}

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { insightLinks, generateDetailedContent } from "@/lib/insights-data";
 import { BUILT_INDUSTRY_PATHS } from "@/lib/industries";
+import { BUILT_TECH_PATHS } from "@/lib/technologies";
 import { getInternalLinks } from "@/lib/internal-links";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs, { type Crumb } from "@/components/Breadcrumbs";
@@ -18,10 +19,11 @@ export function generateStaticParams() {
   // Blog articles have their own dedicated `/blog/[slug]` route backed by the
   // blog database. Including them here creates static catch-all pages for the
   // same URLs, which makes every article render the generic insight content.
-  // The industry pages in BUILT_INDUSTRY_PATHS are excluded for the same
-  // reason: each has a dedicated route with approved, hand-built content.
+  // The industry and technology pages in BUILT_INDUSTRY_PATHS / BUILT_TECH_PATHS
+  // are excluded for the same reason: each has a dedicated route with approved,
+  // hand-built content.
   return insightLinks
-    .filter((link) => link.category !== "blog" && !BUILT_INDUSTRY_PATHS.includes(link.path) && link.path !== "/technologies/azure")
+    .filter((link) => link.category !== "blog" && !BUILT_INDUSTRY_PATHS.includes(link.path) && !BUILT_TECH_PATHS.includes(link.path))
     .map((link) => ({
       slug: link.path.split("/").filter(Boolean),
     }));

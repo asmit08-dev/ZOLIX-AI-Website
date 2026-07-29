@@ -211,7 +211,7 @@ export default function CategoryHub({
                   <p className="flex-1 text-[14px] font-medium leading-relaxed text-zolix-dark/55">
                     {item.metaDesc}
                   </p>
-                  <div className={`mt-7 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors ${isTechnologyCard ? "rounded-full bg-zolix-dark/[.06] px-4 py-4 text-zolix-dark/65 group-hover:bg-[#38314f] group-hover:text-white" : "border-t border-zolix-dark/10 pt-5 text-zolix-dark/45 group-hover:text-zolix-dark"}`}>
+                  <div className={`mt-7 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors ${isTechnologyCard ? "rounded-full bg-zolix-dark px-4 py-4 text-white group-hover:bg-black" : "border-t border-zolix-dark/10 pt-5 text-zolix-dark/45 group-hover:text-zolix-dark"}`}>
                     <span>{isTechnologyCard ? "Explore technology" : "Explore solution"}</span>
                     <ArrowUpRight size={15} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                   </div>
