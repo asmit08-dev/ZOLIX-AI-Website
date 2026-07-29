@@ -7,6 +7,29 @@ import type { TocItem } from "@/lib/toc";
 
 const HEADER_CLEARANCE = 120;
 
+function toRoman(value: number) {
+  const numerals: [number, string][] = [[1000, "m"], [900, "cm"], [500, "d"], [400, "cd"], [100, "c"], [90, "xc"], [50, "l"], [40, "xl"], [10, "x"], [9, "ix"], [5, "v"], [4, "iv"], [1, "i"]];
+  return numerals.reduce((result, [number, symbol]) => {
+    const repeats = Math.floor(value / number);
+    value %= number;
+    return result + symbol.repeat(repeats);
+  }, "");
+}
+
+function hierarchyLabels(items: TocItem[]) {
+  let section = 0;
+  let subsection = 0;
+  return items.map((item) => {
+    if (item.level === 2) {
+      section += 1;
+      subsection = 0;
+      return String(section);
+    }
+    subsection += 1;
+    return toRoman(subsection);
+  });
+}
+
 function useActiveHeading(ids: string[]) {
   const idsKey = ids.join(",");
   const [activeId, setActiveId] = useState<string | null>(ids[0] ?? null);
@@ -35,6 +58,7 @@ function useActiveHeading(ids: string[]) {
 }
 
 function TocList({ items, activeId, onNavigate }: { items: TocItem[]; activeId: string | null; onNavigate?: () => void }) {
+  const labels = useMemo(() => hierarchyLabels(items), [items]);
   const navigate = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     event.preventDefault();
     const target = document.getElementById(id);
@@ -48,7 +72,7 @@ function TocList({ items, activeId, onNavigate }: { items: TocItem[]; activeId: 
 
   return <ol className="space-y-1.5">{items.map((item, index) => {
     const isActive = item.id === activeId;
-    return <li key={item.id} className={item.level === 3 ? "ml-3" : ""}><motion.a data-toc-id={item.id} href={`#${item.id}`} onClick={(event) => navigate(event, item.id)} aria-current={isActive ? "location" : undefined} animate={{ x: isActive ? 0 : -2 }} transition={{ type: "spring", stiffness: 380, damping: 28 }} className={`group relative flex items-start gap-3 rounded-xl px-3 py-2.5 text-sm leading-snug focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zolix-orange ${isActive ? "text-white shadow-[0_8px_18px_rgba(220,106,79,.2)]" : "text-zolix-dark/60 hover:bg-zolix-beige hover:text-zolix-dark"}`}><AnimatePresence initial={false}>{isActive && <motion.span initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .98 }} transition={{ duration: .2, ease: [0.16, 1, .3, 1] }} className="absolute inset-0 rounded-xl bg-zolix-orange" />}</AnimatePresence><motion.span animate={{ opacity: isActive ? .72 : 1 }} transition={{ duration: .18 }} className={`relative z-10 mt-0.5 text-[10px] font-extrabold tabular-nums ${isActive ? "text-white" : "text-zolix-orange"}`}>{String(index + 1).padStart(2, "0")}</motion.span><span className={`relative z-10 flex-1 font-semibold ${item.level === 3 ? "text-[13px] font-medium" : ""}`}>{item.text}</span><AnimatePresence initial={false}>{isActive && <motion.span initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 3 }} transition={{ duration: .18 }} className="relative z-10 mt-0.5 shrink-0"><ArrowUpRight size={14} strokeWidth={2.5} /></motion.span>}</AnimatePresence></motion.a></li>;
+    return <li key={item.id} className={item.level === 3 ? "ml-3" : ""}><motion.a data-toc-id={item.id} href={`#${item.id}`} onClick={(event) => navigate(event, item.id)} aria-current={isActive ? "location" : undefined} animate={{ x: isActive ? 0 : -2 }} transition={{ type: "spring", stiffness: 380, damping: 28 }} className={`group relative flex items-start gap-3 rounded-xl px-3 py-2.5 text-sm leading-snug focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zolix-orange ${isActive ? "text-white shadow-[0_8px_18px_rgba(220,106,79,.2)]" : "text-zolix-dark/60 hover:bg-zolix-beige hover:text-zolix-dark"}`}><AnimatePresence initial={false}>{isActive && <motion.span initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .98 }} transition={{ duration: .2, ease: [0.16, 1, .3, 1] }} className="absolute inset-0 rounded-xl bg-zolix-orange" />}</AnimatePresence><motion.span animate={{ opacity: isActive ? .72 : 1 }} transition={{ duration: .18 }} className={`relative z-10 mt-0.5 min-w-4 text-[10px] font-extrabold ${isActive ? "text-white" : "text-zolix-orange"}`}>{labels[index]}</motion.span><span className={`relative z-10 flex-1 font-semibold ${item.level === 3 ? "text-[13px] font-medium" : ""}`}>{item.text}</span><AnimatePresence initial={false}>{isActive && <motion.span initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 3 }} transition={{ duration: .18 }} className="relative z-10 mt-0.5 shrink-0"><ArrowUpRight size={14} strokeWidth={2.5} /></motion.span>}</AnimatePresence></motion.a></li>;
   })}</ol>;
 }
 
