@@ -156,28 +156,15 @@ body {
   background: transparent;
 }
 
-/* A compact scrollbar for the long desktop table of contents. The track stays
-   quiet until it is needed, while the thumb remains easy to grab. */
+/* The long desktop table of contents still scrolls automatically, but its
+   scrollbar stays visually hidden to keep the reading guide clean. */
 .toc-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--zolix-orange) 65%, transparent) transparent;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .toc-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.toc-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.toc-scrollbar::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--zolix-orange) 55%, transparent);
-  border-radius: 999px;
-}
-
-.toc-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--zolix-orange);
+  display: none;
 }
 
 .hero-dots {
