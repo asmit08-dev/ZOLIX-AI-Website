@@ -156,6 +156,30 @@ body {
   background: transparent;
 }
 
+/* A compact scrollbar for the long desktop table of contents. The track stays
+   quiet until it is needed, while the thumb remains easy to grab. */
+.toc-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--zolix-orange) 65%, transparent) transparent;
+}
+
+.toc-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.toc-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toc-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--zolix-orange) 55%, transparent);
+  border-radius: 999px;
+}
+
+.toc-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--zolix-orange);
+}
+
 .hero-dots {
   background-image: radial-gradient(var(--zolix-orange) 1px, transparent 1px);
   background-size: 32px 32px;
