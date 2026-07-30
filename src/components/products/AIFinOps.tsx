@@ -45,11 +45,11 @@ const AIFinOps = () => {
           </div>
         </div>
 
-        <div className="bg-zolix-dark text-white rounded-[60px] p-16 relative overflow-hidden">
+        <div className="bg-zolix-dark text-white rounded-[32px] sm:rounded-[44px] md:rounded-[60px] p-6 sm:p-10 md:p-16 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-zolix-orange/10 blur-[120px] -mr-48 -mt-48" />
           <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-12 text-center">AI-Native Features</h2>
-          <div className="grid md:grid-cols-2 gap-16 relative z-10">
-            <div className="space-y-8">
+          <div className="grid md:grid-cols-2 gap-10 md:gap-16 relative z-10">
+            <div className="space-y-8 min-w-0">
               {[
                 "Token-level cost attribution for LLMs (OpenAI, Anthropic, Llama)",
                 "Inference vs. Training cost analysis and forecasting",
@@ -59,11 +59,11 @@ const AIFinOps = () => {
               ].map((f, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <CheckCircle2 className="text-zolix-orange mt-1 shrink-0" size={20} />
-                  <span className="text-lg font-bold opacity-80">{f}</span>
+                  <span className="min-w-0 flex-1 text-lg font-bold opacity-80 break-words">{f}</span>
                 </div>
               ))}
             </div>
-            <div className="bg-white/5 rounded-3xl p-10 border border-white/10 flex flex-col justify-center">
+            <div className="min-w-0 bg-white/5 rounded-3xl p-6 sm:p-10 border border-white/10 flex flex-col justify-center">
               <h4 className="text-zolix-orange font-bold uppercase tracking-widest text-[10px] mb-6">LLM Intelligence</h4>
               <p className="text-white/40 mb-8 leading-relaxed font-bold">ZOLIX identifies the most cost-effective model for your specific workload, balancing latency, accuracy, and cost.</p>
               <div className="text-5xl font-bold text-white mb-2">50%</div>

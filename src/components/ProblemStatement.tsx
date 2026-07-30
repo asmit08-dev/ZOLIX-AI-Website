@@ -21,7 +21,7 @@ const ProblemStatement = () => {
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid lg:grid-cols-2 gap-24 items-center">
-          <div>
+          <div className="min-w-0">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -45,47 +45,47 @@ const ProblemStatement = () => {
               Zolix was built to close these gaps - not patch around them.
             </p>
 
-            <div className="grid grid-cols-2 gap-8">
-              <div className="p-8 bg-white/10 rounded-3xl border border-white/10 group hover:bg-white/20 transition-all">
+            <div className="grid grid-cols-2 gap-4 sm:gap-8">
+              <div className="p-5 sm:p-8 bg-white/10 rounded-3xl border border-white/10 group hover:bg-white/20 transition-all min-w-0">
                 <TrendingDown className="text-white mb-4" size={32} />
-                <div className="text-3xl font-bold mb-2">$300Bn+</div>
-                <div className="text-[9px] font-bold uppercase tracking-widest opacity-60">Annual Cloud Waste</div>
+                <div className="text-2xl sm:text-3xl font-bold mb-2">$300Bn+</div>
+                <div className="text-[9px] font-bold uppercase tracking-widest opacity-60 break-words">Annual Cloud Waste</div>
               </div>
-              <div className="p-8 bg-white/10 rounded-3xl border border-white/10 group hover:bg-white/20 transition-all">
+              <div className="p-5 sm:p-8 bg-white/10 rounded-3xl border border-white/10 group hover:bg-white/20 transition-all min-w-0">
                 <ZapOff className="text-white mb-4" size={32} />
-                <div className="text-3xl font-bold mb-2">4.2x</div>
-                <div className="text-[9px] font-bold uppercase tracking-widest opacity-60">AI Cost Multiplier</div>
+                <div className="text-2xl sm:text-3xl font-bold mb-2">4.2x</div>
+                <div className="text-[9px] font-bold uppercase tracking-widest opacity-60 break-words">AI Cost Multiplier</div>
               </div>
             </div>
           </div>
 
-          <div className="relative">
-            <div className="relative bg-zolix-dark border border-white/10 rounded-[60px] p-12 overflow-hidden shadow-2xl">
+          <div className="relative min-w-0">
+            <div className="relative bg-zolix-dark border border-white/10 rounded-[32px] sm:rounded-[44px] md:rounded-[60px] p-6 sm:p-8 md:p-12 overflow-hidden shadow-2xl">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-zolix-orange to-transparent animate-pulse" />
-              
-              <div className="flex items-center justify-between mb-10">
-                <div className="flex items-center gap-3">
-                  <Activity size={16} className="text-zolix-orange" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-40 text-white">Live C2O Engine Analysis</span>
+
+              <div className="flex items-center justify-between gap-3 mb-8 md:mb-10">
+                <div className="flex items-center gap-3 min-w-0">
+                  <Activity size={16} className="text-zolix-orange shrink-0" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-40 text-white truncate">Live C2O Engine Analysis</span>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-1 shrink-0">
                   <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
                   <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
                 </div>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-6 md:space-y-8">
                 {[
                   "Legacy tools flag problems. They don't fix them.",
                   "Threshold-based alerts miss AI-specific waste patterns.",
                   "Multi-cloud visibility is fragmented across separate dashboards.",
                   "GPU and inference costs get buried inside general computer spend."
                 ].map((label) => (
-                  <div key={label} className="flex items-center gap-6 group">
-                    <div className="w-12 h-12 shrink-0 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-zolix-orange transition-colors">
+                  <div key={label} className="flex items-center gap-4 sm:gap-6 group">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-zolix-orange transition-colors">
                       <Radar size={20} className="text-white/20 group-hover:text-white" />
                     </div>
-                    <span className="text-base font-bold opacity-60 group-hover:opacity-100 transition-opacity text-white leading-snug">{label}</span>
+                    <span className="min-w-0 flex-1 text-sm sm:text-base font-bold opacity-60 group-hover:opacity-100 transition-opacity text-white leading-snug break-words">{label}</span>
                   </div>
                 ))}
               </div>

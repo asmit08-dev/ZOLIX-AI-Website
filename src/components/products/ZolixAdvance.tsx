@@ -26,7 +26,7 @@ const ZolixAdvance = () => {
             { icon: Users, title: "RBAC & SSO", desc: "Role-Based Access Control and SAML/SSO integration for large teams." },
             { icon: BarChart, title: "Custom Showback", desc: "Advanced chargeback dashboards and audit-ready PDF/CSV exports." }
           ].map((item, i) => (
-            <div key={i} className="p-10 bg-zolix-beige rounded-[40px] border border-zolix-dark/5">
+            <div key={i} className="p-6 sm:p-8 md:p-10 bg-zolix-beige rounded-[24px] sm:rounded-[32px] md:rounded-[40px] border border-zolix-dark/5">
               <item.icon className="text-zolix-orange mb-6" size={32} />
               <h3 className="text-xl font-bold mb-4 text-zolix-dark">{item.title}</h3>
               <p className="text-zolix-dark/50 font-medium text-sm leading-relaxed">{item.desc}</p>
@@ -34,11 +34,11 @@ const ZolixAdvance = () => {
           ))}
         </div>
 
-        <div className="bg-zolix-dark text-white rounded-[60px] p-16 relative overflow-hidden">
+        <div className="bg-zolix-dark text-white rounded-[32px] sm:rounded-[44px] md:rounded-[60px] p-6 sm:p-10 md:p-16 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-zolix-orange/10 blur-[120px] -mr-48 -mt-48" />
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-12 relative z-10">Enterprise Feature List</h2>
-          <div className="grid md:grid-cols-2 gap-16 relative z-10">
-            <ul className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-10 md:gap-16 relative z-10">
+            <ul className="space-y-6 min-w-0">
               {[
                 "AI FinOps included — real-time GPU and token tuning",
                 "VRAM optimization to prevent GPU hoarding",
@@ -50,11 +50,11 @@ const ZolixAdvance = () => {
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-4">
                   <Zap size={18} className="text-zolix-orange mt-1 shrink-0" />
-                  <span className="text-lg font-medium opacity-80">{f}</span>
+                  <span className="min-w-0 flex-1 text-lg font-medium opacity-80 break-words">{f}</span>
                 </li>
               ))}
             </ul>
-            <div className="bg-white/5 rounded-3xl p-10 border border-white/10 flex flex-col justify-center">
+            <div className="min-w-0 bg-white/5 rounded-3xl p-6 sm:p-10 border border-white/10 flex flex-col justify-center">
               <h4 className="text-zolix-orange font-bold uppercase tracking-widest text-xs mb-6">Enterprise Support</h4>
               <p className="text-white/40 mb-8 leading-relaxed font-medium">Advance users receive dedicated support for Enterprise Agreement (EA) negotiations and custom governance workflows.</p>
               <div className="text-4xl font-bold text-white mb-2">24/7</div>

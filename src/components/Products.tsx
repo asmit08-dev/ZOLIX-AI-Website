@@ -60,7 +60,7 @@ const Products = () => {
         </div>
 
         {/* Sovereign AI C2O Engine Highlight */}
-        <div className="mb-24 p-10 md:p-16 bg-zolix-beige rounded-[60px] border border-black/5 relative overflow-hidden">
+        <div className="mb-24 p-6 sm:p-10 md:p-16 bg-zolix-beige rounded-[32px] sm:rounded-[44px] md:rounded-[60px] border border-black/5 relative overflow-hidden">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -69,7 +69,7 @@ const Products = () => {
             }}
           />
           <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
-            <div>
+            <div className="min-w-0">
               <div className="inline-flex items-center gap-2 bg-zolix-orange text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest mb-8">
                 <ShieldCheck size={14} /> Sovereign AI Technology
               </div>
@@ -79,28 +79,28 @@ const Products = () => {
               <p className="text-xl text-gray-600 font-medium leading-relaxed mb-10">
                 Our Sovereign AI C2O engine provides precision recommendations based on a <span className="text-black font-bold">9 Billion Parameter model</span>, specifically trained on <span className="text-black font-bold">2M+ infrastructure data points</span> and <span className="text-black font-bold">10,000+ global best practices</span>.
               </p>
-              <div className="grid grid-cols-2 gap-8">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-zolix-orange shadow-sm">
+              <div className="grid grid-cols-2 gap-4 sm:gap-8">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="w-12 h-12 shrink-0 rounded-2xl bg-white flex items-center justify-center text-zolix-orange shadow-sm">
                     <Database size={20} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-2xl font-bold">9B</div>
-                    <div className="text-[9px] font-bold uppercase tracking-widest opacity-40">Parameters</div>
+                    <div className="text-[9px] font-bold uppercase tracking-widest opacity-40 break-words">Parameters</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-zolix-orange shadow-sm">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="w-12 h-12 shrink-0 rounded-2xl bg-white flex items-center justify-center text-zolix-orange shadow-sm">
                     <Zap size={20} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-2xl font-bold">10k+</div>
-                    <div className="text-[9px] font-bold uppercase tracking-widest opacity-40">Best Practices</div>
+                    <div className="text-[9px] font-bold uppercase tracking-widest opacity-40 break-words">Best Practices</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="bg-black text-white p-12 rounded-[40px] shadow-2xl">
+            <div className="min-w-0 bg-black text-white p-6 sm:p-8 md:p-12 rounded-[24px] sm:rounded-[32px] md:rounded-[40px] shadow-2xl">
               <h4 className="text-xl font-bold mb-6">Why Sovereign AI?</h4>
               <ul className="space-y-6">
                 {[
@@ -110,8 +110,8 @@ const Products = () => {
                   "Enterprise-grade data sovereignty"
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-zolix-orange" />
-                    <span className="text-gray-400 font-medium">{item}</span>
+                    <div className="w-2 h-2 shrink-0 rounded-full bg-zolix-orange" />
+                    <span className="min-w-0 text-gray-400 font-medium break-words">{item}</span>
                   </li>
                 ))}
               </ul>

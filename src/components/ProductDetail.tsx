@@ -74,7 +74,7 @@ const ProductDetail = () => {
         </div>
 
         {/* C2O Engine Science Section */}
-        <div className="p-10 md:p-24 bg-zolix-dark text-white rounded-[80px] relative overflow-hidden shadow-2xl">
+        <div className="p-6 sm:p-10 md:p-24 bg-zolix-dark text-white rounded-[32px] sm:rounded-[48px] md:rounded-[80px] relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(220,106,79,0.1),transparent)] pointer-events-none" />
           
           <div className="max-w-4xl relative z-10">
@@ -88,7 +88,7 @@ const ProductDetail = () => {
               ZOLIX AI is built on a proprietary Sovereign AI architecture. Unlike legacy FinOps tools that rely on simple threshold rules, C2O uses deep neural networks to predict and remediate cloud waste before it happens.
             </p>
 
-            <div className="grid md:grid-cols-3 gap-16">
+            <div className="grid md:grid-cols-3 gap-10 md:gap-16">
               <div className="space-y-8">
                 <div className="w-16 h-16 rounded-3xl bg-white/5 flex items-center justify-center text-zolix-orange border border-white/10">
                   <Binary size={32} />

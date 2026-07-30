@@ -59,9 +59,9 @@ const CloudFinOps = () => {
               </div>
               <div className="text-[8px] font-bold uppercase tracking-widest text-black/20">ZOLIX LITE DASHBOARD</div>
             </div>
-            <div className="p-8 md:p-12 text-left">
-              <div className="grid md:grid-cols-2 gap-12">
-                <div>
+            <div className="p-5 sm:p-8 md:p-12 text-left">
+              <div className="grid md:grid-cols-2 gap-10 md:gap-12">
+                <div className="min-w-0">
                   <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Real-time Savings Analysis</div>
                   <div className="text-6xl font-bold mb-4 text-black">$48,720<span className="text-xl text-gray-400">/mo</span></div>
                   <div className="text-[10px] font-bold text-green-500 uppercase tracking-widest">~32% reduction vs current spend</div>
@@ -72,19 +72,19 @@ const CloudFinOps = () => {
                     ))}
                   </div>
                 </div>
-                <div className="space-y-6">
+                <div className="space-y-6 min-w-0">
                   <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-4">Top Recommendations</div>
                   {[
                     { p: "AWS", t: "Compute instance rightsizing", s: "$12,420" },
                     { p: "Azure", t: "Unused disk termination", s: "$8,110" },
                     { p: "GCP", t: "BigQuery slot optimization", s: "$5,400" }
                   ].map((item, i) => (
-                    <div key={i} className="flex items-center justify-between p-4 bg-zolix-beige/30 rounded-2xl border border-black/5">
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-zolix-orange font-bold text-[10px]">{item.p}</div>
-                        <div className="text-xs font-bold">{item.t}</div>
+                    <div key={i} className="flex items-center justify-between gap-3 p-4 bg-zolix-beige/30 rounded-2xl border border-black/5">
+                      <div className="flex items-center gap-4 min-w-0">
+                        <div className="w-8 h-8 shrink-0 rounded-lg bg-white flex items-center justify-center text-zolix-orange font-bold text-[10px]">{item.p}</div>
+                        <div className="min-w-0 flex-1 text-xs font-bold break-words">{item.t}</div>
                       </div>
-                      <div className="text-xs font-bold text-zolix-orange">{item.s}</div>
+                      <div className="shrink-0 text-xs font-bold text-zolix-orange">{item.s}</div>
                     </div>
                   ))}
                 </div>
@@ -100,16 +100,16 @@ const CloudFinOps = () => {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Fortune 500, PSUs & the <br /> world&apos;s <span className="text-zolix-orange italic">fastest-growing</span> teams.</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
             {[
               { v: "$20M+", l: "Cloud spend optimized" },
               { v: "250+", l: "Teams onboarded" },
               { v: "100+", l: "Cloud regions managed" },
               { v: "SOC 2", l: "Type II Certified" }
             ].map((stat, i) => (
-              <div key={i} className="bg-white p-8 rounded-[32px] border border-black/5 text-center">
-                <div className="text-3xl font-bold text-black mb-2">{stat.v}</div>
-                <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400">{stat.l}</div>
+              <div key={i} className="bg-white p-5 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-black/5 text-center">
+                <div className="text-2xl sm:text-3xl font-bold text-black mb-2">{stat.v}</div>
+                <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 break-words">{stat.l}</div>
               </div>
             ))}
           </div>
@@ -118,7 +118,7 @@ const CloudFinOps = () => {
 
       {/* Savings Estimator Slider */}
       <section className="py-32 px-6">
-        <div className="max-w-4xl mx-auto bg-white p-12 md:p-20 rounded-[60px] border border-black/5 shadow-xl">
+        <div className="max-w-4xl mx-auto bg-white p-6 sm:p-12 md:p-20 rounded-[32px] sm:rounded-[44px] md:rounded-[60px] border border-black/5 shadow-xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold tracking-tight mb-4">Estimate your savings <span className="text-zolix-orange">in 5 seconds.</span></h2>
             <p className="text-gray-500 font-medium">Move the slider to your monthly cloud spend. We&apos;ll project your savings.</p>
@@ -140,18 +140,18 @@ const CloudFinOps = () => {
             />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="p-8 bg-zolix-beige/50 rounded-[32px] border border-black/5">
+          <div className="grid md:grid-cols-2 gap-4 sm:gap-8">
+            <div className="p-6 sm:p-8 bg-zolix-beige/50 rounded-[24px] sm:rounded-[32px] border border-black/5 min-w-0">
               <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-4">Projected Monthly Savings</div>
-              <div className="text-4xl font-bold text-zolix-orange">${(spend * 0.32).toLocaleString()}</div>
+              <div className="text-3xl sm:text-4xl font-bold text-zolix-orange">${(spend * 0.32).toLocaleString()}</div>
               <p className="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">That&apos;s ${(spend * 0.32 * 12).toLocaleString()} saved per year</p>
             </div>
-            <div className="p-8 bg-black text-white rounded-[32px]">
+            <div className="p-6 sm:p-8 bg-black text-white rounded-[24px] sm:rounded-[32px] min-w-0">
               <div className="text-[9px] font-bold uppercase tracking-widest text-zolix-orange mb-4">ZOLIX AI Guarantee</div>
               <ul className="space-y-3">
                 {["Avg. resource identified: 42%", "Recommendation accuracy: 99.2%", "Time to first insight: < 60 sec"].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-xs font-bold">
-                    <CheckCircle2 size={14} className="text-zolix-orange" /> {item}
+                    <CheckCircle2 size={14} className="shrink-0 text-zolix-orange" /> <span className="min-w-0">{item}</span>
                   </li>
                 ))}
               </ul>

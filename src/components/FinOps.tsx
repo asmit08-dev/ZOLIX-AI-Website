@@ -59,9 +59,9 @@ const FinOps = () => {
               </div>
               <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-zolix-dark/20">ZOLIX LITE DASHBOARD</div>
             </div>
-            <div className="p-10 md:p-16 text-left">
-              <div className="grid lg:grid-cols-2 gap-20">
-                <div>
+            <div className="p-6 sm:p-10 md:p-16 text-left">
+              <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+                <div className="min-w-0">
                   <div className="text-[11px] font-bold uppercase tracking-widest text-zolix-dark/30 mb-4">Real-time Savings Analysis</div>
                   <div className="text-7xl font-extrabold mb-4 text-zolix-dark">$48,720<span className="text-2xl text-zolix-dark/20">/mo</span></div>
                   <div className="text-[11px] font-bold text-zolix-orange uppercase tracking-widest bg-zolix-orange/5 inline-block px-4 py-1 rounded-full">~32% reduction vs current spend</div>
@@ -78,7 +78,7 @@ const FinOps = () => {
                     ))}
                   </div>
                 </div>
-                <div className="space-y-8">
+                <div className="space-y-8 min-w-0">
                   <div className="flex items-center justify-between">
                     <div className="text-[11px] font-bold uppercase tracking-widest text-zolix-dark/30">Top Recommendations</div>
                     <div className="text-[10px] font-bold text-zolix-orange uppercase tracking-widest">View All</div>
@@ -89,12 +89,12 @@ const FinOps = () => {
                     { p: "GCP", t: "BigQuery slot optimization", s: "$5,400" },
                     { p: "OCI", t: "Flexible shape tuning", s: "$3,180" }
                   ].map((item, i) => (
-                    <div key={i} className="flex items-center justify-between p-6 bg-zolix-beige/20 rounded-[32px] border border-zolix-dark/5 hover:border-zolix-orange/20 transition-all group">
-                      <div className="flex items-center gap-6">
-                        <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-zolix-orange font-bold text-xs shadow-sm group-hover:bg-zolix-orange group-hover:text-white transition-colors">{item.p}</div>
-                        <div className="text-sm font-bold text-zolix-dark">{item.t}</div>
+                    <div key={i} className="flex items-center justify-between gap-4 p-4 sm:p-6 bg-zolix-beige/20 rounded-[24px] sm:rounded-[32px] border border-zolix-dark/5 hover:border-zolix-orange/20 transition-all group">
+                      <div className="flex items-center gap-4 sm:gap-6 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-2xl bg-white flex items-center justify-center text-zolix-orange font-bold text-xs shadow-sm group-hover:bg-zolix-orange group-hover:text-white transition-colors">{item.p}</div>
+                        <div className="min-w-0 flex-1 text-sm font-bold text-zolix-dark break-words">{item.t}</div>
                       </div>
-                      <div className="text-sm font-bold text-zolix-orange">{item.s}</div>
+                      <div className="shrink-0 text-sm font-bold text-zolix-orange">{item.s}</div>
                     </div>
                   ))}
                 </div>

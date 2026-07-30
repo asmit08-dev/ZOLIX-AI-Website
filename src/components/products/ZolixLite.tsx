@@ -26,7 +26,7 @@ const ZolixLite = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16 mb-32">
-          <div className="bg-zolix-beige/40 p-12 md:p-16 rounded-[60px] border border-zolix-dark/5">
+          <div className="min-w-0 bg-zolix-beige/40 p-6 sm:p-10 md:p-16 rounded-[32px] sm:rounded-[44px] md:rounded-[60px] border border-zolix-dark/5">
             <h2 className="text-2xl font-bold mb-10 text-zolix-dark">Core Capabilities</h2>
             <ul className="space-y-8">
               {[
@@ -36,44 +36,44 @@ const ZolixLite = () => {
                 { t: "Instant Audit", d: "Detection of orphaned disks, idle balancers, and over-provisioned nodes." },
                 { t: "Multi-Cloud View", d: "Unified visibility across AWS, Azure, GCP, and OCI." }
               ].map((f, i) => (
-                <li key={i} className="flex items-start gap-6 group">
-                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-zolix-orange shadow-sm group-hover:bg-zolix-orange group-hover:text-white transition-colors">
+                <li key={i} className="flex items-start gap-4 sm:gap-6 group">
+                  <div className="w-10 h-10 shrink-0 rounded-xl bg-white flex items-center justify-center text-zolix-orange shadow-sm group-hover:bg-zolix-orange group-hover:text-white transition-colors">
                     <Zap size={18} />
                   </div>
-                  <div>
-                    <div className="font-bold text-zolix-dark mb-1">{f.t}</div>
-                    <div className="text-sm text-zolix-dark/50 font-medium leading-relaxed">{f.d}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-zolix-dark mb-1 break-words">{f.t}</div>
+                    <div className="text-sm text-zolix-dark/50 font-medium leading-relaxed break-words">{f.d}</div>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
-          
-          <div className="flex flex-col gap-8">
-            <div className="p-12 bg-zolix-dark text-white rounded-[50px] shadow-2xl relative overflow-hidden flex-grow">
+
+          <div className="min-w-0 flex flex-col gap-8">
+            <div className="p-6 sm:p-8 md:p-12 bg-zolix-dark text-white rounded-[28px] sm:rounded-[36px] md:rounded-[50px] shadow-2xl relative overflow-hidden flex-grow">
               <div className="absolute top-0 right-0 w-64 h-64 bg-zolix-orange/10 blur-[100px] -mr-32 -mt-32" />
               <h3 className="text-3xl font-bold mb-8 relative z-10">Why Lite?</h3>
               <p className="text-white/60 leading-relaxed mb-12 text-lg font-medium relative z-10">
                 We believe every team deserves visibility. ZOLIX Lite provides a comprehensive audit and actionable rightsizing recommendations instantly, helping you stop cloud waste before it scales.
               </p>
-              <div className="grid grid-cols-2 gap-8 relative z-10">
-                <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                  <div className="text-4xl font-bold text-zolix-orange mb-2">Day-1</div>
-                  <div className="text-[9px] font-bold uppercase tracking-widest opacity-40">ROI Guaranteed</div>
+              <div className="grid grid-cols-2 gap-4 sm:gap-8 relative z-10">
+                <div className="p-4 sm:p-6 bg-white/5 rounded-3xl border border-white/10 min-w-0">
+                  <div className="text-3xl sm:text-4xl font-bold text-zolix-orange mb-2">Day-1</div>
+                  <div className="text-[9px] font-bold uppercase tracking-widest opacity-40 break-words">ROI Guaranteed</div>
                 </div>
-                <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                  <div className="text-4xl font-bold text-zolix-orange mb-2">&lt;60s</div>
-                  <div className="text-[9px] font-bold uppercase tracking-widest opacity-40">Onboarding Time</div>
+                <div className="p-4 sm:p-6 bg-white/5 rounded-3xl border border-white/10 min-w-0">
+                  <div className="text-3xl sm:text-4xl font-bold text-zolix-orange mb-2">&lt;60s</div>
+                  <div className="text-[9px] font-bold uppercase tracking-widest opacity-40 break-words">Onboarding Time</div>
                 </div>
               </div>
             </div>
-            
-            <div className="p-10 bg-zolix-orange text-white rounded-[40px] flex items-center justify-between group cursor-pointer hover:bg-zolix-dark transition-colors">
-              <div>
+
+            <div className="p-6 sm:p-10 bg-zolix-orange text-white rounded-[24px] sm:rounded-[40px] flex items-center justify-between gap-4 group cursor-pointer hover:bg-zolix-dark transition-colors">
+              <div className="min-w-0">
                 <div className="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">Scaling beyond $25k/mo?</div>
-                <div className="text-xl font-bold">Explore ZOLIX Advance</div>
+                <div className="text-xl font-bold break-words">Explore ZOLIX Advance</div>
               </div>
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-45 transition-transform">
+              <div className="w-12 h-12 shrink-0 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-45 transition-transform">
                 <ArrowRight size={20} />
               </div>
             </div>
@@ -84,22 +84,22 @@ const ZolixLite = () => {
         <div className="py-24 border-t border-zolix-dark/5">
           <h2 className="text-3xl font-bold mb-16 text-center">Lite vs. Advance</h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="p-8 rounded-3xl bg-zolix-beige/30 border border-zolix-dark/5">
+            <div className="min-w-0 p-8 rounded-3xl bg-zolix-beige/30 border border-zolix-dark/5">
               <h3 className="font-bold text-xl mb-6">ZOLIX Lite</h3>
               <ul className="space-y-4">
                 {["CUR/Billing Export Only", "Read-Only Discovery", "AI Planner Included", "Community Support"].map(item => (
                   <li key={item} className="flex items-center gap-3 text-sm text-zolix-dark/60 font-medium">
-                    <CheckCircle2 size={16} className="text-zolix-orange" /> {item}
+                    <CheckCircle2 size={16} className="shrink-0 text-zolix-orange" /> <span className="min-w-0">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="p-8 rounded-3xl bg-zolix-dark text-white">
+            <div className="min-w-0 p-8 rounded-3xl bg-zolix-dark text-white">
               <h3 className="font-bold text-xl mb-6">ZOLIX Advance</h3>
               <ul className="space-y-4">
                 {["Full IAM Automation", "Real-time Remediation", "Custom Chargebacks", "24/7 Priority Support"].map(item => (
                   <li key={item} className="flex items-center gap-3 text-sm text-white/60 font-medium">
-                    <CheckCircle2 size={16} className="text-zolix-orange" /> {item}
+                    <CheckCircle2 size={16} className="shrink-0 text-zolix-orange" /> <span className="min-w-0">{item}</span>
                   </li>
                 ))}
               </ul>
