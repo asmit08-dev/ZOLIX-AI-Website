@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, ArrowRight, Play } from 'lucide-react';
+import Image from 'next/image';
 import JsonLd from '../JsonLd';
 import { faqSchema } from '@/lib/schema';
 
@@ -59,36 +60,15 @@ const CloudFinOps = () => {
               </div>
               <div className="text-[8px] font-bold uppercase tracking-widest text-black/20">ZOLIX LITE DASHBOARD</div>
             </div>
-            <div className="p-5 sm:p-8 md:p-12 text-left">
-              <div className="grid md:grid-cols-2 gap-10 md:gap-12">
-                <div className="min-w-0">
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Real-time Savings Analysis</div>
-                  <div className="text-6xl font-bold mb-4 text-black">$48,720<span className="text-xl text-gray-400">/mo</span></div>
-                  <div className="text-[10px] font-bold text-green-500 uppercase tracking-widest">~32% reduction vs current spend</div>
-                  
-                  <div className="mt-12 h-32 flex items-end gap-2">
-                    {[40, 60, 45, 70, 55, 90, 85].map((h, i) => (
-                      <div key={i} className={`flex-1 rounded-t-lg ${i === 6 ? 'bg-zolix-orange' : 'bg-zolix-beige'}`} style={{ height: `${h}%` }} />
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-6 min-w-0">
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-4">Top Recommendations</div>
-                  {[
-                    { p: "AWS", t: "Compute instance rightsizing", s: "$12,420" },
-                    { p: "Azure", t: "Unused disk termination", s: "$8,110" },
-                    { p: "GCP", t: "BigQuery slot optimization", s: "$5,400" }
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center justify-between gap-3 p-4 bg-zolix-beige/30 rounded-2xl border border-black/5">
-                      <div className="flex items-center gap-4 min-w-0">
-                        <div className="w-8 h-8 shrink-0 rounded-lg bg-white flex items-center justify-center text-zolix-orange font-bold text-[10px]">{item.p}</div>
-                        <div className="min-w-0 flex-1 text-xs font-bold break-words">{item.t}</div>
-                      </div>
-                      <div className="shrink-0 text-xs font-bold text-zolix-orange">{item.s}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <div className="relative aspect-[2296/1268] w-full">
+              <Image
+                src="/product-image/lite.png"
+                alt="Cloud FinOps cost optimization dashboard screenshot"
+                fill
+                className="object-cover object-top"
+                sizes="(min-width: 1024px) 1024px, 100vw"
+                priority
+              />
             </div>
           </div>
         </div>

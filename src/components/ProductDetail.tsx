@@ -1,14 +1,15 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Cloud, BrainCircuit, Cpu, ArrowRight, ShieldCheck, Database, Binary, CpuIcon } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Database, Binary, CpuIcon } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const products = [
   {
     id: "ai-finops",
     title: "AI FinOps",
-    icon: BrainCircuit,
+    image: "/product-image/ai-finops.png",
     path: "/ai-finops",
     tagline: "Financial ops for LLM workloads.",
     desc: "The only platform built specifically for the massive financial overhead of AI infrastructure. Manage token costs, inference efficiency, and training ROI."
@@ -16,7 +17,7 @@ const products = [
   {
     id: "cloud-finops",
     title: "Cloud FinOps",
-    icon: Cloud,
+    image: "/product-image/lite.png",
     path: "/cloud-finops",
     tagline: "Enterprise cloud cost management.",
     desc: "Automated cost allocation, visibility, and optimization across multi-cloud environments. Built for complex enterprise architectures and global scale."
@@ -24,7 +25,7 @@ const products = [
   {
     id: "gpu-calculator",
     title: "GPU Calculator",
-    icon: Cpu,
+    image: "/product-image/calculator.png",
     path: "/gpu-cost",
     tagline: "Precise estimation for GPU workloads.",
     desc: "Stop guessing your AI infrastructure costs. Real-time pricing and performance estimation for NVIDIA and AMD hardware across all major clouds."
@@ -51,23 +52,36 @@ const ProductDetail = () => {
 
         <div className="grid md:grid-cols-3 gap-8 mb-32">
           {products.map((product, idx) => (
-            <motion.div 
+            <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
-              className="group bg-zolix-beige p-12 rounded-[50px] border border-zolix-dark/5 hover:bg-zolix-dark transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-2xl"
+              className="h-full"
             >
-              <div className="w-16 h-16 bg-zolix-orange rounded-[24px] flex items-center justify-center text-white mb-10 group-hover:scale-110 transition-transform shadow-lg shadow-zolix-orange/20">
-                <product.icon size={32} />
-              </div>
-              <h2 className="text-3xl font-bold mb-3 group-hover:text-white transition-colors">{product.title}</h2>
-              <p className="text-zolix-orange font-bold uppercase tracking-widest text-[10px] mb-8">{product.tagline}</p>
-              <p className="text-zolix-dark/5 group-hover:text-white/40 text-base leading-relaxed mb-12 font-medium flex-grow">{product.desc}</p>
-              
-              <Link href={product.path} className="inline-flex items-center gap-4 font-bold uppercase tracking-widest text-[10px] group-hover:text-zolix-orange transition-colors">
-                Explore Deep-Dive <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              <Link
+                href={product.path}
+                className="group bg-zolix-beige rounded-[50px] border border-zolix-dark/5 hover:bg-zolix-dark transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-2xl overflow-hidden"
+              >
+                <div className="relative aspect-[16/10] bg-white overflow-hidden border-b border-zolix-dark/5">
+                  <Image
+                    src={product.image}
+                    alt={`${product.title} product screenshot`}
+                    fill
+                    className="object-contain p-6 group-hover:scale-105 transition-transform duration-500"
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                  />
+                </div>
+                <div className="p-12 flex flex-col flex-grow">
+                  <h2 className="text-3xl font-bold mb-3 group-hover:text-white transition-colors">{product.title}</h2>
+                  <p className="text-zolix-orange font-bold uppercase tracking-widest text-[10px] mb-8">{product.tagline}</p>
+                  <p className="text-zolix-dark/50 group-hover:text-white/40 text-base leading-relaxed mb-12 font-medium flex-grow">{product.desc}</p>
+
+                  <span className="inline-flex items-center gap-4 font-bold uppercase tracking-widest text-[10px] group-hover:text-zolix-orange transition-colors">
+                    Explore Deep-Dive <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
               </Link>
             </motion.div>
           ))}

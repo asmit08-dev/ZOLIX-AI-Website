@@ -1,4 +1,5 @@
 import { BrainCircuit, CheckCircle2 } from 'lucide-react';
+import Image from 'next/image';
 
 const AIFinOps = () => {
   return (
@@ -19,9 +20,16 @@ const AIFinOps = () => {
               </a>
             </div>
           </div>
-          <div className="bg-zolix-beige rounded-[48px] p-12 aspect-square flex items-center justify-center relative overflow-hidden">
+          <div className="bg-zolix-beige rounded-[48px] p-8 aspect-square flex items-center justify-center relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-zolix-orange/10 to-transparent" />
-            <BrainCircuit size={200} className="text-zolix-orange/20" />
+            <Image
+              src="/product-image/ai-finops.png"
+              alt="AI FinOps dashboard screenshot"
+              fill
+              className="object-contain p-8 relative"
+              sizes="(min-width: 1024px) 40vw, 90vw"
+              priority
+            />
           </div>
         </div>
 

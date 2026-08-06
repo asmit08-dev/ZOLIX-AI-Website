@@ -1,4 +1,5 @@
 import { Cpu, CheckCircle2, Globe, Shield, BarChart3 } from 'lucide-react';
+import Image from 'next/image';
 
 const GPUCost = () => {
   return (
@@ -19,9 +20,16 @@ const GPUCost = () => {
               </a>
             </div>
           </div>
-          <div className="bg-zolix-beige rounded-[48px] p-12 aspect-square flex items-center justify-center relative overflow-hidden">
+          <div className="bg-zolix-beige rounded-[48px] p-8 aspect-square flex items-center justify-center relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-zolix-orange/10 to-transparent" />
-            <Cpu size={200} className="text-zolix-orange/20" />
+            <Image
+              src="/product-image/calculator.png"
+              alt="GPU Calculator app screenshot"
+              fill
+              className="object-contain p-8 relative"
+              sizes="(min-width: 1024px) 40vw, 90vw"
+              priority
+            />
           </div>
         </div>
 
